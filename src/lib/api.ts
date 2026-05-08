@@ -101,7 +101,7 @@ let authToken: string | null = null;
 let sessionLoaded = false;
 
 function getBaseUrl() {
-  return (import.meta.env.VITE_API_URL || "https://farmes-backend.onrender.com").replace(/\/+$/, "");
+  return (import.meta.env.VITE_API_URL || "https://farmes-backend-production.up.railway.app").replace(/\/+$/, "");
 }
 
 async function loadSessionFromStorage() {
