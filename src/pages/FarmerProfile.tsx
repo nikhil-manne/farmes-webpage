@@ -4,6 +4,7 @@ import { Award, ChevronLeft, Leaf, MapPin, Play, X } from "lucide-react";
 import farmCover from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
 import { api, BackendFarmer } from "@/lib/api";
+import { Loader } from "@/components/ui/loader";
 import apple from "../assets/apple.png";
 import bachalakura from "../assets/bachalakura.png";
 import banana from "../assets/banana.png";
@@ -169,7 +170,7 @@ const FarmerProfile = () => {
   const resolvedUrl = (item: MediaItem) => signedUrlByMediaId[item.id] || (isAbsoluteUrl(item.url) ? item.url : "");
   const name = farmer?.user.name || farmer?.farmName || "Farm Partner";
 
-  if (loading) return <div className="p-6 text-sm text-muted-foreground">Loading farmer profile...</div>;
+  if (loading) return <Loader text="Loading farmer profile..." />;
   if (!farmer) return <div className="p-6 text-sm text-muted-foreground">{error || "Farmer not found."}</div>;
 
   return (

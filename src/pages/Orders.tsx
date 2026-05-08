@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Check, Home as HomeIcon, Package as PackageIcon, Sprout, Truck } from "lucide-react";
 import { api } from "@/lib/api";
 import { toOrderUiStatus } from "@/lib/mappers";
+import { Loader } from "@/components/ui/loader";
 
 type Status = "ordered" | "harvesting" | "packed" | "delivery" | "delivered";
 type UiOrder = { id: string; date: string; items: number; total: number; status: Status };
@@ -60,7 +61,7 @@ const Orders = () => {
       </header>
 
       <div className="mt-6 space-y-4 px-5 lg:px-0">
-        {loading ? <div className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">Loading orders...</div> : null}
+        {loading ? <Loader text="Loading orders..." /> : null}
         {!loading && error ? (
           <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">
             <p>{error}</p>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, CreditCard, FileText, HelpCircle, LogOut, MapPin, Pencil, Phone, Shield, User as UserIcon } from "lucide-react";
 import { api } from "@/lib/api";
+import { Loader } from "@/components/ui/loader";
 
 type ProfileState = {
   name: string;
@@ -89,7 +90,7 @@ const Profile = () => {
       </header>
 
       <section className="mx-5 mt-5 rounded-lg border border-border bg-card p-5 shadow-soft lg:mx-0">
-        {loading ? <p className="mb-4 text-sm text-muted-foreground">Loading profile...</p> : null}
+        {loading ? <Loader text="Loading profile..." /> : null}
         {error ? <p className="mb-4 rounded-md bg-destructive/5 p-3 text-sm text-destructive">{error}</p> : null}
         {success ? <p className="mb-4 rounded-md bg-primary-soft p-3 text-sm font-semibold text-primary">{success}</p> : null}
 

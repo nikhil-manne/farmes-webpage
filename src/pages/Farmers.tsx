@@ -5,6 +5,7 @@ import farmerPortrait from "@/assets/farmer-1.jpg";
 import farmHero from "@/assets/farm-1.jpg";
 import { api } from "@/lib/api";
 import { toUiProduct } from "@/lib/mappers";
+import { Loader } from "@/components/ui/loader";
 
 type FarmerCard = {
   id: string;
@@ -76,7 +77,7 @@ const Farmers = () => {
         </div>
       </section>
 
-      {loading ? <div className="mt-6 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">Loading farmers...</div> : null}
+      {loading ? <Loader text="Loading farmers..." /> : null}
       {error ? <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">{error}</div> : null}
 
       <section className="mt-6 grid gap-4 md:grid-cols-2">

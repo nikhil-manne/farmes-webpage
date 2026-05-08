@@ -4,6 +4,7 @@ import { Clock, Minus, Plus, Trash2, Truck } from "lucide-react";
 import { api } from "@/lib/api";
 import { toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
+import { Loader } from "@/components/ui/loader";
 
 const Cart = () => {
   const { items, setQty, clear } = useCart();
@@ -74,7 +75,7 @@ const Cart = () => {
       </div>
 
       <div className="mt-4 space-y-3 px-5 lg:px-0">
-        {loading ? <div className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">Loading cart details...</div> : null}
+        {loading ? <Loader text="Loading cart details..." /> : null}
         {detailed.length === 0 && !loading ? (
           <div className="rounded-lg border border-dashed border-border py-12 text-center text-sm text-muted-foreground">
             Your basket is empty.

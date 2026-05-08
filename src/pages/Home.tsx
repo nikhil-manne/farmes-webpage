@@ -6,6 +6,7 @@ import farmerPortrait from "@/assets/farmer-1.jpg";
 import { api } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
+import { Loader } from "@/components/ui/loader";
 
 const highlights = [
   { label: "Partner farms", value: "Live" },
@@ -192,7 +193,7 @@ const Home = () => {
           ))}
         </div>
 
-        {loading ? <div className="mt-5 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">Loading fresh products...</div> : null}
+        {loading ? <Loader text="Loading fresh products..." /> : null}
         {error ? <div className="mt-5 rounded-lg border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">{error}</div> : null}
 
         <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">

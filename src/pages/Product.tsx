@@ -4,6 +4,7 @@ import { ChevronLeft, MapPin, ShoppingBag } from "lucide-react";
 import { api } from "@/lib/api";
 import { toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
+import { Loader } from "@/components/ui/loader";
 
 const Product = () => {
   const { id = "" } = useParams();
@@ -29,7 +30,7 @@ const Product = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <div className="p-6 text-sm text-muted-foreground">Loading product...</div>;
+  if (loading) return <Loader text="Loading product..." />;
   if (!product) return <div className="p-6 text-sm text-muted-foreground">{error || "Product not found."}</div>;
 
   return (
