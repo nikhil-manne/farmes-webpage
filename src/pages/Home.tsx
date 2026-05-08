@@ -129,21 +129,40 @@ const Home = () => {
           </dl>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
-          <div className="aspect-[4/3] overflow-hidden">
-            <img src={farmHero} alt="Fresh produce farm" className="h-full w-full object-cover" />
-          </div>
-          <div className="flex items-center gap-4 p-4">
-            <img src={farmerPortrait} alt="Farm partner" className="h-14 w-14 rounded-md object-cover" />
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-sm font-bold">{farmers[0]?.name || "Farm Partner"}</p>
-              <p className="text-xs text-muted-foreground">{farmers[0]?.location || "Known local farms. Fresh seasonal produce."}</p>
-            </div>
-            {farmers[0] ? (
-              <Link to={`/farmer/${farmers[0].id}`} className="shrink-0 text-sm font-bold text-primary hover:underline">
-                View farm
-              </Link>
-            ) : null}
+        <div className="min-w-0 w-full relative">
+          <div className="flex w-full gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 -mb-4">
+            {farmers.length > 0 ? (
+              farmers.map((farmer) => (
+                <div key={farmer.id} className="w-[85%] shrink-0 snap-center overflow-hidden rounded-lg border border-border bg-card shadow-card sm:w-[320px]">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img src={farmHero} alt={`Farm ${farmer.name}`} className="h-full w-full object-cover" />
+                  </div>
+                  <div className="flex items-center gap-4 p-4">
+                    <img src={farmerPortrait} alt={farmer.name} className="h-14 w-14 rounded-md object-cover" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-display text-sm font-bold">{farmer.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">{farmer.location}</p>
+                    </div>
+                    <Link to={`/farmer/${farmer.id}`} className="shrink-0 text-sm font-bold text-primary hover:underline">
+                      View farm
+                    </Link>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="w-full shrink-0 overflow-hidden rounded-lg border border-border bg-card shadow-card">
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img src={farmHero} alt="Fresh produce farm" className="h-full w-full object-cover" />
+                </div>
+                <div className="flex items-center gap-4 p-4">
+                  <img src={farmerPortrait} alt="Farm partner" className="h-14 w-14 rounded-md object-cover" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-sm font-bold">Partner Farms</p>
+                    <p className="text-xs text-muted-foreground">Known local farms. Fresh seasonal produce.</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
