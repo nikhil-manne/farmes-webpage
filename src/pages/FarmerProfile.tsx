@@ -4,36 +4,32 @@ import { Award, ChevronLeft, Leaf, MapPin, Play, X } from "lucide-react";
 import farmCover from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
 import { api, BackendFarmer } from "@/lib/api";
-import tomato from "../assets/tomato.png";
+import apple from "../assets/apple.png";
+import bachalakura from "../assets/bachalakura.png";
+import banana from "../assets/banana.png";
+import beerakaya from "../assets/beerakaya.png";
+import brinjal from "../assets/brinjal.png";
+import carrot from "../assets/carrot.png";
+import chili from "../assets/chili.png";
+import chukkakura from "../assets/chukkakura.png";
+import dosakaya from "../assets/dosakaya.png";
+import gongura from "../assets/gongura.png";
+import goruchikkudu from "../assets/goruchikkudu.png";
+import grapes from "../assets/grapes.png";
+import ivygourd from "../assets/ivygourd.png";
+import kakarakaya from "../assets/kakarakaya.png";
+import ladyfinger from "../assets/ladyfinger.png";
+import mango from "../assets/mango.png";
+import mulakkaya from "../assets/mulakkaya.png";
+import onion from "../assets/onion.png";
+import potato from "../assets/potato.png";
+import potlakaya from "../assets/potlakaya.png";
 import spinach from "../assets/spinach.png";
 import sweetpotato from "../assets/sweetpotato.png";
 import thotakura from "../assets/thotakura.png";
-import sorakaya from "../assets/sorakaya.png";
-import potlakaya from "../assets/potlakaya.png";
-import potato from "../assets/potato.png";
-import palakura from "../assets/palakura.png";
-import onion from "../assets/onion.png";
-import mulakkaya from "../assets/mulakkaya.png";
-import menthikura from "../assets/menthikura.png";
-import mango from "../assets/mango.png";
-import ladyfinger from "../assets/ladyfinger.png";
-import kakarakaya from "../assets/kakarakaya.png";
-import ivygourd from "../assets/ivygourd.png";
-import grapes from "../assets/grapes.png";
-import goruchikkudu from "../assets/goruchikkudu.png";
-import gongura from "../assets/gongura.png";
-import dosakaya from "../assets/dosakaya.png";
-import chukkakura from "../assets/chukkakura.png";
-import chili from "../assets/chili.png";
-import carrot from "../assets/carrot.png";
-import brinjal from "../assets/brinjal.png";
-import beerakaya from "../assets/beerakaya.png";
-import banana from "../assets/banana.png";
-import bachalakura from "../assets/bachalakura.png";
-import apple from "../assets/apple.png";
+import tomato from "../assets/tomato.png";
 type MediaItem = { id: string; type: "IMAGE" | "VIDEO"; url: string };
 type FarmerProductCard = { id: string; name: string; image: string; pricePerKg: number };
-
 const productImages: Record<string, string> = {
   apple,
   bachalakura,
@@ -51,13 +47,10 @@ const productImages: Record<string, string> = {
   kakarakaya,
   ladyfinger,
   mango,
-  menthikura,
   mulakkaya,
   onion,
-  palakura,
   potato,
   potlakaya,
-  sorakaya,
   spinach,
   sweetpotato,
   thotakura,
