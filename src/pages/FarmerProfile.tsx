@@ -5,91 +5,10 @@ import farmCover from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
 import { api, BackendFarmer } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
-import apple from "../assets/apple.png";
-import bachalakura from "../assets/bachalakura.png";
-import banana from "../assets/banana.png";
-import beerakaya from "../assets/beerakaya.png";
-import brinjal from "../assets/brinjal.png";
-import carrot from "../assets/carrot.png";
-import chili from "../assets/chili.png";
-import chukkakura from "../assets/chukkakura.png";
-import dosakaya from "../assets/dosakaya.png";
-import gongura from "../assets/gongura.png";
-import goruchikkudu from "../assets/goruchikkudu.png";
-import grapes from "../assets/grapes.png";
-import ivygourd from "../assets/ivygourd.png";
-import kakarakaya from "../assets/kakarakaya.png";
-import ladyfinger from "../assets/ladyfinger.png";
-import mango from "../assets/mango.png";
-import mulakkaya from "../assets/mulakkaya.png";
-import onion from "../assets/onion.png";
-import potato from "../assets/potato.png";
-import potlakaya from "../assets/potlakaya.png";
-import spinach from "../assets/spinach.png";
-import sweetpotato from "../assets/sweetpotato.png";
-import thotakura from "../assets/thotakura.png";
-import tomato from "../assets/tomato.png";
+import { getProductImage } from "@/lib/mappers";
+
 type MediaItem = { id: string; type: "IMAGE" | "VIDEO"; url: string };
 type FarmerProductCard = { id: string; name: string; image: string; pricePerKg: number };
-const productImages: Record<string, string> = {
-  apple,
-  bachalakura,
-  banana,
-  beerakaya,
-  brinjal,
-  carrot,
-  chili,
-  chukkakura,
-  dosakaya,
-  gongura,
-  goruchikkudu,
-  grapes,
-  ivygourd,
-  kakarakaya,
-  ladyfinger,
-  mango,
-  mulakkaya,
-  onion,
-  potato,
-  potlakaya,
-  spinach,
-  sweetpotato,
-  thotakura,
-  tomato,
-};
-
-const productAliases: Record<string, string> = {
-  "ridge gourd": "beerakaya",
-  "bitter gourd": "kakarakaya",
-  "snake gourd": "potlakaya",
-  "bottle gourd": "sorakaya",
-  "ivy gourd": "ivygourd",
-  "yellow cucumber": "dosakaya",
-  "cluster beans": "goruchikkudu",
-  "sorrel leaves": "gongura",
-  "fenugreek leaves": "menthikura",
-  drumstick: "mulakkaya",
-  "amaranth leaves": "thotakura",
-  "spinach leaves": "palakura",
-  okra: "ladyfinger",
-  bhindi: "ladyfinger",
-  eggplant: "brinjal",
-  "sweet potato": "sweetpotato",
-  chilli: "chili",
-};
-
-function getFarmerProductImage(productName: string) {
-  const normalized = productName.toLowerCase().trim();
-  if (productImages[normalized]) return productImages[normalized];
-  if (productAliases[normalized] && productImages[productAliases[normalized]]) return productImages[productAliases[normalized]];
-  for (const key of Object.keys(productImages)) {
-    if (normalized.includes(key) || key.includes(normalized)) return productImages[key];
-  }
-  for (const [alias, key] of Object.entries(productAliases)) {
-    if (normalized.includes(alias) || alias.includes(normalized)) return productImages[key];
-  }
-  return tomato;
-}
 
 const isAbsoluteUrl = (value: string) => /^https?:\/\//i.test((value || "").trim());
 const inferMediaTypeFromUrl = (url: string): "IMAGE" | "VIDEO" => {
@@ -162,7 +81,7 @@ const FarmerProfile = () => {
       (farmer?.products || []).map((product) => ({
         id: product.id,
         name: product.name,
-        image: getFarmerProductImage(product.name),
+        image: getProductImage(product.name),
         pricePerKg: Number(product.pricePerKg),
       })),
     [farmer],

@@ -52,6 +52,9 @@ const productImages: Record<string, string> = {
   ivygourd,
   mulakkaya,
   goruchikkudu,
+  sorakaya,
+  palakura,
+  menthikura,
 };
 
 const nameAliases: Record<string, string> = {
@@ -88,7 +91,7 @@ export type UiProduct = {
   tags: string[];
 };
 
-function getProductImage(productName: string) {
+export function getProductImage(productName: string) {
   const normalized = productName.toLowerCase().trim();
   if (productImages[normalized]) return productImages[normalized];
   if (nameAliases[normalized] && productImages[nameAliases[normalized]]) return productImages[nameAliases[normalized]];
