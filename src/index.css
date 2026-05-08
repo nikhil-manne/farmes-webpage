@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* farmes design system — natural, premium, farm-fresh */
+@layer base {
+  :root {
+    --background: 100 25% 98%;        /* #F9FBF9 */
+    --foreground: 90 8% 10%;          /* #1A1C19 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 90 8% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 90 8% 10%;
+
+    --primary: 113 38% 25%;           /* #2D5A27 deep natural green */
+    --primary-foreground: 100 25% 98%;
+    --primary-soft: 113 30% 94%;
+    --primary-muted: 113 25% 88%;
+
+    --secondary: 46 65% 52%;          /* #D4AF37 warm gold */
+    --secondary-foreground: 90 8% 10%;
+    --secondary-soft: 46 60% 95%;
+
+    --muted: 100 15% 95%;
+    --muted-foreground: 90 6% 40%;
+
+    --accent: 113 30% 94%;
+    --accent-foreground: 113 38% 25%;
+
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 100 12% 90%;
+    --input: 100 12% 92%;
+    --ring: 113 38% 25%;
+
+    --radius: 1rem;
+
+    /* gradients & shadows */
+    --gradient-fresh: linear-gradient(135deg, hsl(113 38% 25%), hsl(113 45% 35%));
+    --gradient-soft: linear-gradient(180deg, hsl(113 30% 96%), hsl(100 25% 98%));
+    --shadow-card: 0 2px 12px -4px hsl(113 38% 25% / 0.08);
+    --shadow-soft: 0 1px 3px hsl(113 38% 25% / 0.04);
+    --shadow-elevated: 0 8px 30px -8px hsl(113 38% 25% / 0.18);
+
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Manrope', system-ui, sans-serif;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Manrope', system-ui, sans-serif;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
