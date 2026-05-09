@@ -32,6 +32,16 @@ export type BackendProduct = {
       phone: string;
     };
   };
+  farmerSupply?: Array<{
+    farmerId: string;
+    farmerName: string | null;
+    farmerPhone: string | null;
+    farmName: string | null;
+    farmerLocation: string | null;
+    availableQtyKg: number;
+    harvestQtyKg: number;
+    landAssignedAcres: number;
+  }>;
 };
 
 export type BackendFarmer = {
@@ -98,6 +108,7 @@ export type BackendSettings = {
   platformFee: string;
   gstPercentage: string;
   scheduledDeliveryTime: string;
+  orderCutoffTime: string;
   updatedAt: string;
 };
 
