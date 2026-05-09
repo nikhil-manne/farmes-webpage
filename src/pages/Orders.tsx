@@ -6,7 +6,18 @@ import { toOrderUiStatus } from "@/lib/mappers";
 import { Loader } from "@/components/ui/loader";
 
 type Status = "ordered" | "harvesting" | "packed" | "delivery" | "delivered";
-type UiOrder = { id: string; date: string; items: number; total: number; status: Status };
+type UiOrder = { 
+  id: string; 
+  date: string; 
+  total: number; 
+  status: Status;
+  items: Array<{
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+};
 
 const steps: { key: Status; label: string; icon: typeof Check }[] = [
   { key: "ordered", label: "Ordered", icon: Check },
@@ -36,9 +47,14 @@ const Orders = () => {
           list.map((order) => ({
             id: order.id.slice(0, 8).toUpperCase(),
             date: new Date(order.createdAt).toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" }),
-            items: order.items.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
             total: Number(order.totalAmount),
             status: toOrderUiStatus(order.status),
+            items: order.items.map((item) => ({
+              id: item.id,
+              name: item.product?.name || "Product",
+              quantity: Number(item.quantity || 0),
+              price: Number(item.price || item.product?.pricePerKg || 0),
+            })),
           })),
         ),
       )
@@ -83,10 +99,22 @@ const Orders = () => {
                 <div>
                   <p className="font-display text-sm font-bold">{order.id}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {order.date} - {order.items} kg
+                    {order.date}
                   </p>
                 </div>
                 <p className="font-display text-base font-bold">Rs {order.total}</p>
+              </div>
+
+              <div className="mt-4 rounded bg-muted/50 p-3">
+                <p className="mb-2 text-xs font-semibold text-muted-foreground">Order Items</p>
+                <ul className="space-y-1.5">
+                  {order.items.map((item) => (
+                    <li key={item.id} className="flex justify-between text-xs">
+                      <span>{item.name} x {item.quantity} kg</span>
+                      <span className="font-medium">Rs {item.price * item.quantity}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               <div className="mt-5 flex items-center justify-between">

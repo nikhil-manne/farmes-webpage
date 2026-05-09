@@ -86,6 +86,8 @@ export type BackendOrder = {
   items: Array<{
     id: string;
     quantity: string;
+    price?: string;
+    product?: BackendProduct;
   }>;
 };
 
