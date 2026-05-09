@@ -75,7 +75,91 @@ const nameAliases: Record<string, string> = {
   eggplant: "brinjal",
   "sweet potato": "sweetpotato",
   chilli: "chili",
+  // Telugu/Hindi aliases from farmer app language mode
+  "టమోటా": "tomato",
+  "ఉల్లిపాయ": "onion",
+  "పాలకూర": "palakura",
+  "బంగాళదుంప": "potato",
+  "క్యారెట్": "carrot",
+  "పచ్చి మిర్చి": "chili",
+  "వంకాయ": "brinjal",
+  "బెండకాయ": "ladyfinger",
+  "దొండకాయ": "ivygourd",
+  "గోంగూర": "gongura",
+  "తోటకూర": "thotakura",
+  "మెంతికూర": "menthikura",
+  "చుక్కకూర": "chukkakura",
+  "బచ్చలకూర": "bachalakura",
+  "దోసకాయ": "dosakaya",
+  "బీరకాయ": "beerakaya",
+  "సొరకాయ": "sorakaya",
+  "పొట్లకాయ": "potlakaya",
+  "కాకరకాయ": "kakarakaya",
+  "మునగకాయ": "mulakkaya",
+  "గోరు చిక్కుడు": "goruchikkudu",
+  "చిలగడ దుంప": "sweetpotato",
+  "टमाटर": "tomato",
+  "प्याज़": "onion",
+  "आलू": "potato",
+  "पालक": "palakura",
+  "गाजर": "carrot",
+  "हरी मिर्च": "chili",
+  "बैंगन": "brinjal",
+  "भिंडी": "ladyfinger",
+  "कुंदरू": "ivygourd",
+  "अंबाड़ी": "gongura",
+  "चौलाई": "thotakura",
+  "मेथी": "menthikura",
+  "चुक्का साग": "chukkakura",
+  "पोई साग": "bachalakura",
+  "ककड़ी": "dosakaya",
+  "तोरई": "beerakaya",
+  "लौकी": "sorakaya",
+  "चिचिंडा": "potlakaya",
+  "करेला": "kakarakaya",
+  "सहजन": "mulakkaya",
+  "गवार": "goruchikkudu",
+  "शकरकंद": "sweetpotato",
 };
+
+const canonicalDisplayNames: Record<string, string> = {
+  tomato: "Tomato",
+  onion: "Onion",
+  potato: "Potato",
+  sweetpotato: "Sweet potato",
+  spinach: "Spinach",
+  carrot: "Carrot",
+  chili: "Green chili",
+  apple: "Apple",
+  banana: "Banana",
+  mango: "Mango",
+  grapes: "Grapes",
+  brinjal: "Brinjal",
+  ladyfinger: "Lady finger",
+  ivygourd: "Ivy gourd",
+  gongura: "Gongura",
+  thotakura: "Thotakura",
+  palakura: "Palakura",
+  menthikura: "Menthikura",
+  chukkakura: "Chukkakura",
+  bachalakura: "Bachalakura",
+  dosakaya: "Dosakaya",
+  beerakaya: "Beerakaya",
+  sorakaya: "Sorakaya",
+  potlakaya: "Potlakaya",
+  kakarakaya: "Kakarakaya",
+  mulakkaya: "Mulakkaya",
+  goruchikkudu: "Goru chikkudu",
+};
+
+function normalizeProductName(productName: string) {
+  const normalized = productName.toLowerCase().trim();
+  const key = nameAliases[normalized] ?? normalized.replace(/\s+/g, "");
+  return {
+    key,
+    label: canonicalDisplayNames[key] ?? productName,
+  };
+}
 
 export type UiProduct = {
   id: string;
@@ -120,17 +204,18 @@ export function getProductCategory(productName: string) {
 }
 
 export function toUiProduct(product: BackendProduct): UiProduct {
+  const normalized = normalizeProductName(product.name);
   return {
     id: product.id,
-    name: product.name,
-    image: getProductImage(product.name),
+    name: normalized.label,
+    image: getProductImage(normalized.key),
     pricePerKg: Number(product.pricePerKg),
     unit: "kg",
     farmerId: product.farmerId,
     farmerName: product.farmer.user.name || product.farmer.farmName || "Farm Partner",
     farmerLocation: product.farmer.villageOrAddress,
-    category: getProductCategory(product.name),
-    description: `${product.name} sourced from ${product.farmer.villageOrAddress}.`,
+    category: getProductCategory(normalized.key),
+    description: `${normalized.label} sourced from ${product.farmer.villageOrAddress}.`,
     tags: ["Fresh", "Farm-direct"],
   };
 }
