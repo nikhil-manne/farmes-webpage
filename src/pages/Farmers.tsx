@@ -30,22 +30,39 @@ const Farmers = () => {
         const farmerMap = new Map<string, FarmerCard>();
         list.forEach((product, index) => {
           const mapped = uiProducts[index];
-          const existing = farmerMap.get(product.farmerId);
-          if (!existing) {
-            farmerMap.set(product.farmerId, {
-              id: product.farmerId,
-              name: product.farmer.user.name || product.farmer.farmName || "Farm Partner",
-              farmName: product.farmer.farmName || "Partner Farm",
-              location: product.farmer.villageOrAddress,
-              productCount: 1,
-              topProducts: [mapped.name],
-            });
-            return;
-          }
-          existing.productCount += 1;
-          if (existing.topProducts.length < 4 && !existing.topProducts.includes(mapped.name)) {
-            existing.topProducts.push(mapped.name);
-          }
+          const supplies = product.farmerSupply?.length
+            ? product.farmerSupply
+            : [
+                {
+                  farmerId: product.farmerId,
+                  farmerName: product.farmer.user.name || product.farmer.farmName || "Farm Partner",
+                  farmerPhone: product.farmer.user.phone,
+                  farmName: product.farmer.farmName,
+                  farmerLocation: product.farmer.villageOrAddress,
+                  availableQtyKg: 0,
+                  harvestQtyKg: 0,
+                  landAssignedAcres: 0,
+                },
+              ];
+
+          supplies.forEach((supply) => {
+            const existing = farmerMap.get(supply.farmerId);
+            if (!existing) {
+              farmerMap.set(supply.farmerId, {
+                id: supply.farmerId,
+                name: supply.farmerName || supply.farmName || "Farm Partner",
+                farmName: supply.farmName || "Partner Farm",
+                location: supply.farmerLocation || "Farm location",
+                productCount: 1,
+                topProducts: [mapped.name],
+              });
+              return;
+            }
+            existing.productCount += 1;
+            if (existing.topProducts.length < 4 && !existing.topProducts.includes(mapped.name)) {
+              existing.topProducts.push(mapped.name);
+            }
+          });
         });
         setFarmers(Array.from(farmerMap.values()));
         setError(null);
