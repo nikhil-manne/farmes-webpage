@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, MapPin, Plus, Search, ShieldCheck, Truck } from "lucide-react";
 import farmHero from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
-import { api } from "@/lib/api";
+import { api, BackendProduct } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
 import { Loader } from "@/components/ui/loader";
@@ -25,6 +25,7 @@ const Home = () => {
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState<"RELEVANCE" | "PRICE_ASC" | "PRICE_DESC" | "NAME_ASC">("RELEVANCE");
   const [products, setProducts] = useState<UiProduct[]>([]);
+  const [rawProducts, setRawProducts] = useState<BackendProduct[]>([]);
   const [locationLabel, setLocationLabel] = useState("Hyderabad");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,10 +36,12 @@ const Home = () => {
     api
       .listProducts()
       .then((list) => {
+        setRawProducts(list);
         setProducts(list.map(toUiProduct));
         setError(null);
       })
       .catch((err: Error) => {
+        setRawProducts([]);
         setProducts([]);
         setError(err.message || "Unable to load products.");
       })
@@ -57,17 +60,33 @@ const Home = () => {
 
   const farmers = useMemo(() => {
     const unique = new Map<string, { id: string; name: string; location: string; summary: string }>();
-    products.forEach((item) => {
-      if (unique.has(item.farmerId)) return;
-      unique.set(item.farmerId, {
-        id: item.farmerId,
-        name: item.farmerName,
-        location: item.farmerLocation,
-        summary: "Partner farm",
+    rawProducts.forEach((item) => {
+      const supplies = item.farmerSupply?.length
+        ? item.farmerSupply
+        : [
+            {
+              farmerId: item.farmerId,
+              farmerName: item.farmer.user.name || item.farmer.farmName || "Farm Partner",
+              farmerPhone: item.farmer.user.phone,
+              farmName: item.farmer.farmName,
+              farmerLocation: item.farmer.villageOrAddress,
+              availableQtyKg: 0,
+              harvestQtyKg: 0,
+              landAssignedAcres: 0,
+            },
+          ];
+      supplies.forEach((supply) => {
+        if (unique.has(supply.farmerId)) return;
+        unique.set(supply.farmerId, {
+          id: supply.farmerId,
+          name: supply.farmerName || supply.farmName || "Farm Partner",
+          location: supply.farmerLocation || "Farm location",
+          summary: supply.farmName || "Partner farm",
+        });
       });
     });
     return Array.from(unique.values());
-  }, [products]);
+  }, [rawProducts]);
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
