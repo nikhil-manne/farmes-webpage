@@ -9,16 +9,34 @@ import { Loader } from "@/components/ui/loader";
 const Cart = () => {
   const { items, setQty, clear } = useCart();
   const [products, setProducts] = useState<UiProduct[]>([]);
+  const [scheduledDeliveryTime, setScheduledDeliveryTime] = useState("Tuesday, before 9 PM");
+  const [deliveryPrice, setDeliveryPrice] = useState(29);
+  const [packagingFee, setPackagingFee] = useState(0);
+  const [platformFee, setPlatformFee] = useState(0);
+  const [gstPercentage, setGstPercentage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    api
-      .listProducts()
-      .then((list) => setProducts(list.map(toUiProduct)))
-      .catch(() => setProducts([]))
+    Promise.allSettled([api.listProducts(), api.getSettings()])
+      .then(([productsResult, settingsResult]) => {
+        if (productsResult.status === "fulfilled") {
+          setProducts(productsResult.value.map(toUiProduct));
+        } else {
+          setProducts([]);
+        }
+
+        if (settingsResult.status === "fulfilled") {
+          const settings = settingsResult.value;
+          setDeliveryPrice(Number(settings.deliveryPrice));
+          setPackagingFee(Number(settings.packagingFee));
+          setPlatformFee(Number(settings.platformFee));
+          setGstPercentage(Number(settings.gstPercentage));
+          setScheduledDeliveryTime(settings.scheduledDeliveryTime || "Tuesday, before 9 PM");
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -31,8 +49,12 @@ const Cart = () => {
     .filter(Boolean) as (UiProduct & { qty: number })[];
 
   const subtotal = detailed.reduce((sum, item) => sum + item.pricePerKg * item.qty, 0);
-  const delivery = subtotal > 0 ? 29 : 0;
-  const total = subtotal + delivery;
+  const delivery = subtotal > 0 ? deliveryPrice : 0;
+  const packaging = subtotal > 0 ? packagingFee : 0;
+  const platform = subtotal > 0 ? platformFee : 0;
+  const taxableAmount = subtotal + packaging + platform;
+  const gstAmount = subtotal > 0 ? (taxableAmount * gstPercentage) / 100 : 0;
+  const total = subtotal + delivery + packaging + platform + gstAmount;
 
   const placeOrder = async () => {
     if (!api.hasSession()) {
@@ -66,7 +88,7 @@ const Cart = () => {
           <Truck className="h-4 w-4" />
         </div>
         <div className="flex-1">
-          <p className="font-display text-sm font-bold text-primary">Next delivery - Tuesday, before 9 PM</p>
+          <p className="font-display text-sm font-bold text-primary">Next delivery - {scheduledDeliveryTime}</p>
           <p className="mt-0.5 flex items-center gap-1 text-[11px] text-primary/80">
             <Clock className="h-3 w-3" />
             Order cutoff: today at 9:00 PM
@@ -112,16 +134,19 @@ const Cart = () => {
       {detailed.length > 0 ? (
         <>
           <div className="mx-5 mt-5 space-y-2.5 rounded-lg border border-border bg-card p-4 shadow-soft lg:mx-0">
-            <Row label="Subtotal" value={`Rs ${subtotal}`} />
-            <Row label="Delivery" value={`Rs ${delivery}`} />
+            <Row label="Subtotal" value={`Rs ${subtotal.toFixed(2)}`} />
+            {delivery > 0 ? <Row label="Delivery" value={`Rs ${delivery.toFixed(2)}`} /> : null}
+            {packaging > 0 ? <Row label="Packaging Fee" value={`Rs ${packaging.toFixed(2)}`} /> : null}
+            {platform > 0 ? <Row label="Platform Fee" value={`Rs ${platform.toFixed(2)}`} /> : null}
+            {gstAmount > 0 ? <Row label={`GST (${gstPercentage}%)`} value={`Rs ${gstAmount.toFixed(2)}`} /> : null}
             <div className="border-t border-border pt-2.5">
-              <Row label="Total" value={`Rs ${total}`} bold />
+              <Row label="Total" value={`Rs ${total.toFixed(2)}`} bold />
             </div>
           </div>
 
           <div className="mt-5 space-y-2.5 px-5 lg:px-0">
             <button disabled={placingOrder} onClick={() => void placeOrder()} className="w-full rounded-lg bg-primary py-4 font-display text-sm font-bold text-primary-foreground shadow-card transition-transform active:scale-[0.98] disabled:opacity-60">
-              {placingOrder ? "Placing order..." : `One-time order - Rs ${total}`}
+              {placingOrder ? "Placing order..." : `One-time order - Rs ${total.toFixed(2)}`}
             </button>
             {checkoutError ? <p className="text-center text-xs font-semibold text-destructive">{checkoutError}</p> : null}
           </div>
