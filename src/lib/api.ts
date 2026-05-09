@@ -91,6 +91,16 @@ export type BackendOrder = {
   }>;
 };
 
+export type BackendSettings = {
+  id: string;
+  deliveryPrice: string;
+  packagingFee: string;
+  platformFee: string;
+  gstPercentage: string;
+  scheduledDeliveryTime: string;
+  updatedAt: string;
+};
+
 export type CreateOrderPayload = {
   cartId?: string;
   items?: { productId: string; quantity: number }[];
@@ -183,6 +193,7 @@ export const api = {
     return verify.user;
   },
   listProducts: () => request<BackendProduct[]>("/products"),
+  getSettings: () => request<BackendSettings>("/settings"),
   getProduct: (id: string) => request<BackendProduct>(`/products/${id}`),
   getFarmer: (id: string) => request<BackendFarmer>(`/farmers/${id}`),
   listFarmerMedia: (id: string) => request<BackendFarmerMedia[]>(`/farmers/${id}/media`),
