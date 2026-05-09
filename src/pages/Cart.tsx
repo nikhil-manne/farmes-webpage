@@ -10,6 +10,7 @@ const Cart = () => {
   const { items, setQty, clear } = useCart();
   const [products, setProducts] = useState<UiProduct[]>([]);
   const [scheduledDeliveryTime, setScheduledDeliveryTime] = useState("Tuesday, before 9 PM");
+  const [orderCutoffTime, setOrderCutoffTime] = useState("today at 9:00 PM");
   const [deliveryPrice, setDeliveryPrice] = useState(29);
   const [packagingFee, setPackagingFee] = useState(0);
   const [platformFee, setPlatformFee] = useState(0);
@@ -35,6 +36,7 @@ const Cart = () => {
           setPlatformFee(Number(settings.platformFee));
           setGstPercentage(Number(settings.gstPercentage));
           setScheduledDeliveryTime(settings.scheduledDeliveryTime || "Tuesday, before 9 PM");
+          setOrderCutoffTime(settings.orderCutoffTime || "today at 9:00 PM");
         }
       })
       .finally(() => setLoading(false));
@@ -91,7 +93,7 @@ const Cart = () => {
           <p className="font-display text-sm font-bold text-primary">Next delivery - {scheduledDeliveryTime}</p>
           <p className="mt-0.5 flex items-center gap-1 text-[11px] text-primary/80">
             <Clock className="h-3 w-3" />
-            Order cutoff: today at 9:00 PM
+            Order cutoff: {orderCutoffTime}
           </p>
         </div>
       </div>
