@@ -81,7 +81,7 @@ const Cart = () => {
 
       // 4. Initialize Razorpay Checkout
       const options = {
-        key: "rzp_test_SndQ0U2INyJD3A", // Razorpay Key ID
+        key: "rzp_live_SneI0gY3n6RMSk", // Razorpay Key ID
         amount: paymentInfo.amount,
         currency: "INR",
         name: "farmes",
