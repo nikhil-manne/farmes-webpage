@@ -168,11 +168,11 @@ const Home = () => {
         <div className="animate-in fade-in slide-in-from-left-8 duration-1000">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary">
             <MapPin className="h-3.5 w-3.5" />
-            Direct from farms to {locationLabel}
+            farm to {locationLabel}
           </div>
           <h1 className="mt-6 font-display text-5xl md:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight">
-            Direct from Farm. <br />
-            <span className="text-primary italic">Straight to Your Home.</span>
+            Farm. <br />
+            <span className="text-primary italic">to Home.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
             Farmes is a technology-driven network connecting you directly to local farmers. No middlemen, no cold storage, just honest food harvested at dawn and delivered by dusk.
