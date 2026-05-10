@@ -13,6 +13,7 @@ import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import LaunchBanner from "./components/LaunchBanner";
+import Market from "./pages/Market";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
         <MobileShell>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/market" element={<Market />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/farmer/:id" element={<FarmerProfile />} />
             <Route path="/farmers" element={<Farmers />} />

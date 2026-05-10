@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { Home, ShoppingBag, Package, User } from "lucide-react";
+import { Home, Store, Package, ShoppingBag, User } from "lucide-react";
 import { useCart } from "@/store/cart";
 
 const tabs = [
-  { to: "/", label: "Shop", icon: Home, end: true },
-  { to: "/orders", label: "Orders", icon: Package },
+  { to: "/", label: "Home", icon: Home, end: true },
+  { to: "/market", label: "Market", icon: Store },
   { to: "/cart", label: "Cart", icon: ShoppingBag },
   { to: "/profile", label: "Profile", icon: User },
 ];
