@@ -1,23 +1,58 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, MapPin, Plus, Search, ShieldCheck, Truck } from "lucide-react";
-import farmHero from "@/assets/farm-1.jpg";
-import farmerPortrait from "@/assets/farmer-1.jpg";
+import { 
+  ArrowRight, CheckCircle2, MapPin, Plus, Search, 
+  ShieldCheck, Truck, Zap, Clock, Warehouse, 
+  Coins, Users, Leaf, Calendar, Award, Smile 
+} from "lucide-react";
 import { api, BackendProduct } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
 import { Loader } from "@/components/ui/loader";
 
+// Custom components
+import { SectionHeading } from "@/components/home/SectionHeading";
+import { ProcessStep } from "@/components/home/ProcessStep";
+import { BenefitCard } from "@/components/home/BenefitCard";
+
+// Assets
+import heroHarvest from "@/assets/hero_harvest.png";
+import logisticsImg from "@/assets/logistics.png";
+import farmerSuccess from "@/assets/farmer_success.png";
+import farmHero from "@/assets/farm-1.jpg";
+import farmerPortrait from "@/assets/farmer-1.jpg";
+
 const highlights = [
-  { label: "Partner farms", value: "Live" },
-  { label: "Weekly harvests", value: "2x" },
-  { label: "Avg. delivery", value: "18h" },
+  { label: "Direct Farms", value: "Verified" },
+  { label: "Harvest to Door", value: "< 18h" },
+  { label: "Storage Used", value: "Zero" },
 ];
 
-const promises = [
-  { icon: Truck, title: "Scheduled delivery", text: "Tuesday and Friday routes with clear cutoff windows." },
-  { icon: ShieldCheck, title: "Verified produce", text: "Sourced from known farms with simple, transparent quality checks." },
-  { icon: CheckCircle2, title: "No filler catalog", text: "A focused seasonal selection instead of anonymous marketplace clutter." },
+const processSteps = [
+  {
+    icon: Leaf,
+    title: "Direct Sourcing",
+    description: "We connect with local farmers to identify ready-to-harvest produce based on real-time demand.",
+    stepNumber: 1
+  },
+  {
+    icon: Clock,
+    title: "Morning Collection",
+    description: "Produce is collected early every morning directly from the farms to ensure peak freshness.",
+    stepNumber: 2
+  },
+  {
+    icon: ShieldCheck,
+    title: "Quality Sorting",
+    description: "Every item undergoes rigorous quality checks and sorting in our local hubs.",
+    stepNumber: 3
+  },
+  {
+    icon: Zap,
+    title: "Optimized Delivery",
+    description: "AI-powered routes ensure your order reaches you via the fastest possible path.",
+    stepNumber: 4
+  }
 ];
 
 const Home = () => {
@@ -102,183 +137,304 @@ const Home = () => {
   }, [active, query, products, sortBy]);
 
   return (
-    <div className="pb-12">
+    <div className="flex flex-col gap-20 pb-20 overflow-x-hidden">
+      {/* Header */}
       <header className="flex items-center justify-between px-5 pt-6 lg:px-0 lg:pt-8">
         <Link to="/" className="font-display text-2xl font-bold tracking-normal">
           farm<span className="text-primary">es</span>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-semibold text-muted-foreground md:flex">
-          <a href="#market" className="hover:text-foreground">Market</a>
-          <Link to="/farmers" className="hover:text-foreground">Farmers</Link>
-          <Link to="/orders" className="hover:text-foreground">Orders</Link>
+        <nav className="hidden items-center gap-8 text-sm font-bold text-muted-foreground md:flex">
+          <a href="#about" className="hover:text-primary transition-colors">Our Story</a>
+          <a href="#how-it-works" className="hover:text-primary transition-colors">How it Works</a>
+          <a href="#market" className="hover:text-primary transition-colors">Market</a>
+          <Link to="/farmers" className="hover:text-primary transition-colors">Farmers</Link>
         </nav>
-        <Link to={api.hasSession() ? "/profile" : "/login"} className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90">
-          {api.hasSession() ? "Account" : "Login"}
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to={api.hasSession() ? "/profile" : "/login"} className="inline-flex h-11 items-center justify-center rounded-xl bg-primary px-6 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 shadow-lg shadow-primary/20">
+            {api.hasSession() ? "Account" : "Get Started"}
+          </Link>
+        </div>
       </header>
 
-      <section className="grid gap-8 px-5 pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-0 lg:pt-14">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground">
-            <MapPin className="h-4 w-4 text-primary" />
-            Delivering in {locationLabel}
+      {/* Hero Section */}
+      <section className="px-5 lg:px-0 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="animate-in fade-in slide-in-from-left-8 duration-1000">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary">
+            <MapPin className="h-3.5 w-3.5" />
+            Direct from farms to {locationLabel}
           </div>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl font-extrabold leading-tight text-foreground md:text-5xl lg:text-6xl">
-            Fresh produce from real farms.
+          <h1 className="mt-6 font-display text-5xl md:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight">
+            Freshness that <br/> 
+            <span className="text-primary italic">Defies Storage.</span>
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
-            Browse live harvests, view farmer profiles, add products to your cart, and place one-time orders from the web.
+          <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+            Farmes is a technology-driven network connecting you directly to local farmers. No middlemen, no cold storage, just honest food harvested at dawn and delivered by dusk.
           </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <a href="#market" className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90">
-              Shop the harvest
-              <ArrowRight className="h-4 w-4" />
+          <div className="mt-10 flex flex-wrap gap-4">
+            <a href="#market" className="h-14 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-base font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 shadow-xl shadow-primary/25">
+              Shop Fresh Harvest
+              <ArrowRight className="h-5 w-5" />
             </a>
-            <Link to="/orders" className="inline-flex h-12 items-center justify-center rounded-md border border-border bg-background px-5 text-sm font-bold text-foreground transition-colors hover:bg-muted">
-              Track orders
-            </Link>
+            <a href="#how-it-works" className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20">
+              See Our Process
+            </a>
           </div>
-          <dl className="mt-8 grid grid-cols-3 gap-3 border-y border-border py-5">
+          <div className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
             {highlights.map((item) => (
               <div key={item.label}>
-                <dt className="text-xs font-semibold text-muted-foreground">{item.label}</dt>
+                <dt className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{item.label}</dt>
                 <dd className="mt-1 font-display text-2xl font-extrabold text-foreground">{item.value}</dd>
               </div>
             ))}
-          </dl>
-        </div>
-
-        <div className="min-w-0 w-full relative">
-          <div className="flex w-full gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 -mb-4">
-            {farmers.length > 0 ? (
-              farmers.map((farmer) => (
-                <div key={farmer.id} className="w-[85%] shrink-0 snap-center overflow-hidden rounded-lg border border-border bg-card shadow-card sm:w-[320px]">
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img src={farmHero} alt={`Farm ${farmer.name}`} className="h-full w-full object-cover" />
-                  </div>
-                  <div className="flex items-center gap-4 p-4">
-                    <img src={farmerPortrait} alt={farmer.name} className="h-14 w-14 rounded-md object-cover" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-sm font-bold">{farmer.name}</p>
-                      <p className="truncate text-xs text-muted-foreground">{farmer.location}</p>
-                    </div>
-                    <Link to={`/farmer/${farmer.id}`} className="shrink-0 text-sm font-bold text-primary hover:underline">
-                      View farm
-                    </Link>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="w-full shrink-0 overflow-hidden rounded-lg border border-border bg-card shadow-card">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img src={farmHero} alt="Fresh produce farm" className="h-full w-full object-cover" />
-                </div>
-                <div className="flex items-center gap-4 p-4">
-                  <img src={farmerPortrait} alt="Farm partner" className="h-14 w-14 rounded-md object-cover" />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-display text-sm font-bold">Partner Farms</p>
-                    <p className="text-xs text-muted-foreground">Known local farms. Fresh seasonal produce.</p>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      </section>
-
-      <section className="grid gap-3 px-5 pt-10 md:grid-cols-3 lg:px-0">
-        {promises.map(({ icon: Icon, title, text }) => (
-          <article key={title} className="rounded-lg border border-border bg-card p-5 shadow-soft">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-soft text-primary">
-              <Icon className="h-5 w-5" />
+        <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
+          <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-2xl animate-float">
+            <img src={heroHarvest} alt="Fresh Harvest" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
+            <div className="absolute bottom-8 left-8 right-8 p-6 glass-card rounded-2xl border border-white/20 backdrop-blur-md bg-white/10 text-white">
+              <p className="text-sm font-bold uppercase tracking-widest mb-1 opacity-80">Today's Featured Farm</p>
+              <h3 className="text-2xl font-display font-bold">Green Valley Organics</h3>
+              <p className="text-sm opacity-90 mt-1">Harvested 4 hours ago in Medak District</p>
             </div>
-            <h2 className="mt-4 font-display text-base font-bold">{title}</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{text}</p>
-          </article>
-        ))}
+          </div>
+          {/* Decorative elements */}
+          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-pulse delay-700" />
+        </div>
       </section>
 
-      <section id="market" className="px-5 pt-10 lg:px-0">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-secondary">This week's market</p>
-            <h2 className="mt-2 font-display text-3xl font-extrabold">Fresh today</h2>
+      {/* No Storage USP Section */}
+      <section id="about" className="px-5 lg:px-0 py-20 bg-primary/5 rounded-[3rem] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div className="order-2 lg:order-1">
+            <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-square max-w-md mx-auto lg:mx-0">
+               <img src={logisticsImg} alt="Logistics" className="w-full h-full object-cover" />
+               <div className="absolute inset-0 bg-primary/10" />
+            </div>
           </div>
-          <div className="flex h-11 w-full items-center gap-2 rounded-md border border-border bg-card px-3 shadow-soft md:w-[320px]">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search vegetables or farmers" className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none" />
-          </div>
-        </div>
-
-        <div className="mt-5 flex gap-2 overflow-x-auto no-scrollbar">
-          {categories.map((category) => (
-            <button key={category} onClick={() => setActive(category)} className={`h-10 shrink-0 rounded-md border px-4 text-xs font-bold transition-colors ${active === category ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-foreground hover:border-primary/40"}`}>
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar">
-          {[
-            { key: "RELEVANCE", label: "Sort: Default" },
-            { key: "PRICE_ASC", label: "Price: Low to High" },
-            { key: "PRICE_DESC", label: "Price: High to Low" },
-            { key: "NAME_ASC", label: "Name: A-Z" },
-          ].map((option) => (
-            <button key={option.key} onClick={() => setSortBy(option.key as typeof sortBy)} className={`h-9 shrink-0 rounded-md border px-3 text-xs font-bold transition-colors ${sortBy === option.key ? "border-primary bg-primary-soft text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground"}`}>
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        {loading ? <Loader text="Loading fresh products..." /> : null}
-        {error ? <div className="mt-5 rounded-lg border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">{error}</div> : null}
-
-        <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((vegetable) => (
-            <article key={vegetable.id} className="group overflow-hidden rounded-lg border border-border bg-card shadow-soft transition-shadow hover:shadow-card">
-              <Link to={`/product/${vegetable.id}`} className="block">
-                <div className="aspect-square overflow-hidden bg-muted">
-                  <img src={vegetable.image} alt={vegetable.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <div className="order-1 lg:order-2">
+            <SectionHeading 
+              badge="Zero Storage Policy"
+              title="We Don't Store. We Deliver."
+              description="Unlike traditional retailers, we do not store goods anywhere. No cold rooms, no warehouses, no stale produce. We follow a lean, just-in-time logistics model that keeps food in the field until you order it."
+            />
+            <div className="mt-10 space-y-6">
+              {[
+                { icon: Warehouse, text: "No long-term storage or warehousing facilities used." },
+                { icon: Clock, text: "Direct route from farm-gate to your doorstep in hours." },
+                { icon: ShieldCheck, text: "Minimal handling to preserve natural nutrients and texture." }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-4 group">
+                  <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-primary shadow-soft group-hover:scale-110 transition-transform">
+                    <item.icon className="w-6 h-6" />
+                  </div>
+                  <p className="font-bold text-foreground">{item.text}</p>
                 </div>
-              </Link>
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-3">
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="px-5 lg:px-0">
+        <SectionHeading 
+          align="center"
+          badge="Our Logistics Network"
+          title="The Journey from Farm to Fork"
+          description="We've built a scalable supply-chain infrastructure powered by AI to ensure the fastest delivery network in the agricultural sector."
+          className="mb-16"
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
+          {/* Connecting line for desktop */}
+          <div className="hidden lg:block absolute top-8 left-0 w-full h-0.5 bg-border -z-10" />
+          {processSteps.map((step) => (
+            <ProcessStep key={step.stepNumber} {...step} />
+          ))}
+        </div>
+      </section>
+
+      {/* Stakeholder Benefits */}
+      <section className="px-5 lg:px-0 space-y-12">
+        <SectionHeading 
+          badge="Mutual Growth"
+          title="Empowering Everyone in the Chain"
+          description="Our platform is designed to create a sustainable ecosystem that benefits both those who grow our food and those who eat it."
+        />
+        <div className="grid gap-8">
+          <BenefitCard 
+            type="farmer"
+            title="For Our Farmers"
+            image={farmerSuccess}
+            items={[
+              "Direct access to urban markets without middlemen.",
+              "Consistent demand through data-driven forecasting.",
+              "Transparent and fair pricing for every harvest.",
+              "Faster settlements directly to bank accounts.",
+              "Reduced wastage through optimized collection."
+            ]}
+          />
+          <BenefitCard 
+            type="user"
+            title="For Our Customers"
+            image={farmHero}
+            items={[
+              "Fresher produce than any supermarket shelf.",
+              "Real-time tracking of every delivery.",
+              "Flexible subscription baskets for daily essentials.",
+              "Secure digital payments and easy order management.",
+              "Transparent sourcing—know exactly where your food comes from."
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* Market Section */}
+      <section id="market" className="px-5 lg:px-0 py-20 bg-secondary/5 rounded-[3rem]">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-12">
+            <div>
+              <SectionHeading 
+                badge="The Market"
+                title="Fresh Today"
+                description="Explore the best seasonal produce harvested just hours ago."
+              />
+            </div>
+            <div className="flex h-14 w-full items-center gap-3 rounded-2xl border border-border bg-card px-4 shadow-soft md:w-[360px] focus-within:border-primary transition-colors">
+              <Search className="h-5 w-5 text-muted-foreground" />
+              <input 
+                value={query} 
+                onChange={(event) => setQuery(event.target.value)} 
+                placeholder="Search vegetables or farmers..." 
+                className="w-full bg-transparent text-sm font-medium placeholder:text-muted-foreground focus:outline-none" 
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+            {categories.map((category) => (
+              <button 
+                key={category} 
+                onClick={() => setActive(category)} 
+                className={`h-11 shrink-0 rounded-xl border px-6 text-sm font-bold transition-all ${active === category ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border bg-card text-foreground hover:border-primary/40"}`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar">
+            {[
+              { key: "RELEVANCE", label: "Default" },
+              { key: "PRICE_ASC", label: "Price: Low to High" },
+              { key: "PRICE_DESC", label: "Price: High to Low" },
+              { key: "NAME_ASC", label: "Name: A-Z" },
+            ].map((option) => (
+              <button 
+                key={option.key} 
+                onClick={() => setSortBy(option.key as typeof sortBy)} 
+                className={`h-9 shrink-0 rounded-lg border px-4 text-xs font-bold transition-all ${sortBy === option.key ? "border-primary bg-primary-soft text-primary" : "border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          {loading ? <Loader text="Sourcing fresh products..." /> : null}
+          {error ? <div className="mt-10 rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive font-bold text-center">{error}</div> : null}
+
+          <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((vegetable) => (
+              <article key={vegetable.id} className="group overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:shadow-elevated hover:-translate-y-1">
+                <Link to={`/product/${vegetable.id}`} className="block">
+                  <div className="aspect-square overflow-hidden bg-muted relative">
+                    <img src={vegetable.image} alt={vegetable.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-primary shadow-sm hover:bg-primary hover:text-white transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); add(vegetable.id); }}>
+                      <Plus className="h-5 w-5" />
+                    </div>
+                  </div>
+                </Link>
+                <div className="p-6">
                   <div className="min-w-0">
-                    <Link to={`/product/${vegetable.id}`} className="font-display text-sm font-bold leading-tight hover:text-primary">
+                    <Link to={`/product/${vegetable.id}`} className="font-display text-lg font-bold leading-tight hover:text-primary transition-colors">
                       {vegetable.name}
                     </Link>
-                    <p className="mt-1 truncate text-xs text-muted-foreground">by {vegetable.farmerName}</p>
+                    <p className="mt-1 truncate text-xs font-bold text-muted-foreground uppercase tracking-widest">by {vegetable.farmerName}</p>
                   </div>
-                  <button onClick={() => add(vegetable.id)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground transition-transform active:scale-95" aria-label={`Add ${vegetable.name}`}>
-                    <Plus className="h-4 w-4" strokeWidth={2.5} />
-                  </button>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="font-display text-2xl font-extrabold text-foreground">
+                      ₹{vegetable.pricePerKg}
+                      <span className="text-xs font-bold text-muted-foreground"> / {vegetable.unit}</span>
+                    </p>
+                    <div className="flex items-center gap-1 text-[10px] font-black bg-secondary/20 text-secondary px-2 py-0.5 rounded-full uppercase">
+                       <Award className="w-3 h-3" />
+                       Fresh
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-3 font-display text-lg font-extrabold">
-                  Rs {vegetable.pricePerKg}
-                  <span className="text-xs font-semibold text-muted-foreground"> / {vegetable.unit}</span>
-                </p>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="farmers" className="px-5 pt-10 lg:px-0">
-        <h2 className="font-display text-2xl font-extrabold">Our farmers</h2>
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {farmers.map((farmer) => (
-            <Link key={farmer.id} to={`/farmer/${farmer.id}`} className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-soft transition-shadow hover:shadow-card">
-              <img src={farmerPortrait} alt="" className="h-14 w-14 rounded-md object-cover" />
-              <div className="min-w-0 flex-1">
-                <p className="font-display text-sm font-bold">{farmer.name}</p>
-                <p className="truncate text-xs text-muted-foreground">{farmer.location}</p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-primary" />
-            </Link>
-          ))}
+      {/* CTA Section */}
+      <section className="px-5 lg:px-0">
+        <div className="relative rounded-[3rem] bg-primary p-12 md:p-20 text-center overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -mt-32 -mr-32 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mb-32 -ml-32 animate-pulse delay-1000" />
+          
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <h2 className="font-display text-4xl md:text-5xl font-extrabold text-white leading-tight">
+              Ready to Taste the <br/> <span className="text-secondary italic">Farmes Difference?</span>
+            </h2>
+            <p className="mt-6 text-lg text-primary-soft leading-relaxed">
+              Join thousands of households who have switched to a faster, fresher, and fairer way to buy groceries. No storage, no stale food, just pure farm-to-table goodness.
+            </p>
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
+              <Link to="/signup" className="h-14 inline-flex items-center justify-center rounded-2xl bg-white px-10 text-base font-bold text-primary transition-all hover:bg-secondary-soft hover:scale-105 active:scale-95 shadow-xl">
+                Create Free Account
+              </Link>
+              <Link to="/farmers" className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-white/20 bg-transparent px-10 text-base font-bold text-white transition-all hover:bg-white/10 hover:border-white/40">
+                Meet Our Farmers
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
+
+      {/* Footer Branding */}
+      <footer className="px-5 lg:px-0 py-12 border-t border-border">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="text-center md:text-left">
+            <Link to="/" className="font-display text-3xl font-extrabold tracking-normal">
+              farm<span className="text-primary">es</span>
+            </Link>
+            <p className="mt-2 text-sm text-muted-foreground max-w-xs">
+              Empowering farmers, delighting consumers. A technology-driven fresh commerce network.
+            </p>
+          </div>
+          <div className="flex items-center gap-8">
+             <div className="flex flex-col items-center">
+                <Smile className="w-8 h-8 text-secondary mb-1" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Happy Farmers</span>
+             </div>
+             <div className="flex flex-col items-center">
+                <Leaf className="w-8 h-8 text-primary mb-1" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Always Fresh</span>
+             </div>
+             <div className="flex flex-col items-center">
+                <Truck className="w-8 h-8 text-primary-muted mb-1" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Direct Delivery</span>
+             </div>
+          </div>
+        </div>
+        <div className="mt-12 text-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
+          © 2026 Farmes Agricultural Logistics Network. All Rights Reserved.
+        </div>
+      </footer>
     </div>
   );
 };
