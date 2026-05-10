@@ -4,7 +4,7 @@ import {
   ArrowRight, CheckCircle2, MapPin, Plus, Search, 
   ShieldCheck, Truck, Zap, Clock, Warehouse, 
   Coins, Users, Leaf, Calendar, Award, Smile,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, ShoppingBag
 } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import { api, BackendProduct } from "@/lib/api";
@@ -25,34 +25,34 @@ import farmHero from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
 
 const highlights = [
-  { label: "Direct Farms", value: "Verified" },
-  { label: "Harvest to Door", value: "< 18h" },
+  { label: "Delivery Days", value: "Tue & Fri" },
+  { label: "Order Cutoff", value: "Automated" },
   { label: "Storage Used", value: "Zero" },
 ];
 
 const processSteps = [
   {
-    icon: Leaf,
-    title: "Direct Sourcing",
-    description: "We connect with local farmers to identify ready-to-harvest produce based on real-time demand.",
+    icon: ShoppingBag,
+    title: "Fill Your Cart",
+    description: "Add items to your cart anytime. Set up subscriptions for your daily essentials with Autopay enabled.",
     stepNumber: 1
   },
   {
-    icon: Clock,
-    title: "Morning Collection",
-    description: "Produce is collected early every morning directly from the farms to ensure peak freshness.",
+    icon: Zap,
+    title: "Auto-Order Cutoff",
+    description: "At the scheduled cutoff, your cart is automatically ordered and scheduled for the next delivery day.",
     stepNumber: 2
   },
   {
-    icon: ShieldCheck,
-    title: "Quality Sorting",
-    description: "Every item undergoes rigorous quality checks and sorting in our local hubs.",
+    icon: Leaf,
+    title: "Dawn Harvest",
+    description: "On delivery days (Tue/Fri), farmers harvest your order at dawn specifically for you.",
     stepNumber: 3
   },
   {
-    icon: Zap,
-    title: "Optimized Delivery",
-    description: "AI-powered routes ensure your order reaches you via the fastest possible path.",
+    icon: Truck,
+    title: "Afternoon Arrival",
+    description: "Our optimized logistics network delivers from farm to your door by the afternoon.",
     stepNumber: 4
   }
 ];
@@ -225,13 +225,13 @@ const Home = () => {
             <SectionHeading 
               badge="Zero Storage Policy"
               title="We Don't Store. We Deliver."
-              description="Unlike traditional retailers, we do not store goods anywhere. No cold rooms, no warehouses, no stale produce. We follow a lean, just-in-time logistics model that keeps food in the field until you order it."
+              description="Our Tuesday and Friday delivery schedule is designed for peak freshness. By grouping deliveries, we ensure that food is never stored. It stays in the field until the morning of your delivery."
             />
             <div className="mt-10 space-y-6">
               {[
-                { icon: Warehouse, text: "No long-term storage or warehousing facilities used." },
-                { icon: Clock, text: "Direct route from farm-gate to your doorstep in hours." },
-                { icon: ShieldCheck, text: "Minimal handling to preserve natural nutrients and texture." }
+                { icon: Warehouse, text: "Zero storage. No cold rooms or warehouses ever used." },
+                { icon: Calendar, text: "Scheduled Tue/Fri deliveries enable dawn-to-door logistics." },
+                { icon: ShieldCheck, text: "Minimal handling—from farm gate to you in hours." }
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-primary shadow-soft group-hover:scale-110 transition-transform">
@@ -288,11 +288,11 @@ const Home = () => {
             title="For Our Customers"
             image={farmHero}
             items={[
-              "Fresher produce than any supermarket shelf.",
-              "Real-time tracking of every delivery.",
-              "Flexible subscription baskets for daily essentials.",
-              "Secure digital payments and easy order management.",
-              "Transparent sourcing—know exactly where your food comes from."
+              "Weekly scheduled deliveries every Tuesday and Friday.",
+              "Subscription model for automated recurring essentials.",
+              "Autopay enabled—cart items auto-order at cutoff time.",
+              "Real-time tracking from farm harvest to your doorstep.",
+              "Transparent sourcing—no middlemen or stale storage."
             ]}
           />
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Award, Filter, ChevronRight } from "lucide-react";
+import { Search, Plus, Award, Filter, ChevronRight, Zap, Calendar } from "lucide-react";
 import { api, BackendProduct } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
@@ -57,6 +57,22 @@ const Market = () => {
           title="The Fresh Market"
           description="Browse our complete collection of farm-fresh produce, harvested specifically for your order."
         />
+
+        <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <Calendar className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">Next Delivery Days: Tuesday & Friday</p>
+              <p className="text-xs text-muted-foreground font-medium">Orders placed now will be delivered on the next consecutive delivery day.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg shadow-sm border border-border">
+             <Zap className="w-4 h-4 text-secondary" />
+             <span className="text-xs font-bold uppercase tracking-tight">Auto-order at cutoff</span>
+          </div>
+        </div>
       </header>
 
       <div className="flex flex-col lg:flex-row gap-12">
