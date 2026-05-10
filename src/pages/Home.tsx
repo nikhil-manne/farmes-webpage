@@ -172,7 +172,7 @@ const Home = () => {
           </div>
           <h1 className="mt-6 font-display text-5xl md:text-6xl xl:text-7xl font-extrabold leading-[1.1] tracking-tight">
             Farm. <br />
-            <span className="text-primary italic">to Home.</span>
+            <span className="text-primary italic">To Home.</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
             Farmes is a technology-driven network connecting you directly to local farmers. No middlemen, no cold storage, just honest food harvested at dawn and delivered by dusk.
@@ -280,7 +280,7 @@ const Home = () => {
               "Consistent demand through data-driven forecasting.",
               "Transparent and fair pricing for every harvest.",
               "Faster settlements directly to bank accounts.",
-              "Reduced wastage through optimized collection."
+              "Reduced wastage through order based harvest."
             ]}
           />
           <BenefitCard 
@@ -292,7 +292,7 @@ const Home = () => {
               "Subscription model for automated recurring essentials.",
               "Autopay enabled—cart items auto-order at cutoff time.",
               "Real-time tracking from farm harvest to your doorstep.",
-              "Transparent sourcing—no middlemen or stale storage."
+              "Transparent sourcing—no middlemen or Cold storages."
             ]}
           />
         </div>
