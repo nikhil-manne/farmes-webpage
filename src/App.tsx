@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import LaunchBanner from "./components/LaunchBanner";
 import Market from "./pages/Market";
+import HowItWorks from "./pages/HowItWorks";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/market" element={<Market />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/farmer/:id" element={<FarmerProfile />} />
             <Route path="/farmers" element={<Farmers />} />

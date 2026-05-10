@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
-import { Home, Store, Package, ShoppingBag, User } from "lucide-react";
+import { Home, Store, Package, ShoppingBag, User, HelpCircle } from "lucide-react";
 import { useCart } from "@/store/cart";
 
 const tabs = [
   { to: "/", label: "Home", icon: Home, end: true },
   { to: "/market", label: "Market", icon: Store },
+  { to: "/how-it-works", label: "How it Works", icon: HelpCircle },
   { to: "/cart", label: "Cart", icon: ShoppingBag },
   { to: "/profile", label: "Profile", icon: User },
 ];
@@ -15,7 +16,7 @@ export const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[480px] -translate-x-1/2 border-t border-border/60 bg-background/90 backdrop-blur-xl md:max-w-[720px] lg:hidden">
-      <ul className="grid grid-cols-4 px-2 pb-[env(safe-area-inset-bottom)] pt-2">
+      <ul className="grid grid-cols-5 px-2 pb-[env(safe-area-inset-bottom)] pt-2">
         {tabs.map(({ to, label, icon: Icon, end }) => (
           <li key={to}>
             <NavLink
