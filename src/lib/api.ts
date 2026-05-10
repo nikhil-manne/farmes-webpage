@@ -228,7 +228,17 @@ export const api = {
     request("/cart/remove", { method: "POST", body: JSON.stringify({ productId, quantity }) }, true),
   listOrders: () => request<BackendOrder[]>("/orders", undefined, true),
   createOrder: (payload: CreateOrderPayload = {}) =>
-    request("/orders", { method: "POST", body: JSON.stringify(payload) }, true),
+    request<BackendOrder>("/orders", { method: "POST", body: JSON.stringify(payload) }, true),
+  createPayment: (orderId: string) =>
+    request<{ id: string; amount: string; razorpayOrderId: string }>("/payments/create", {
+      method: "POST",
+      body: JSON.stringify({ orderId }),
+    }, true),
+  verifyPayment: (payload: { paymentId: string; razorpayOrderId: string; razorpayPaymentId: string; razorpaySignature: string }) =>
+    request("/payments/verify", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }, true),
   getMe: () => request<BackendUser>("/users/me", undefined, true),
   updateMe: (payload: { name?: string; address?: string }) =>
     request<BackendUser>("/users/me", { method: "PATCH", body: JSON.stringify(payload) }, true),

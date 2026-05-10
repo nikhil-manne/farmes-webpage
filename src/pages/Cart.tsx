@@ -65,21 +65,73 @@ const Cart = () => {
     }
     const orderItems = items.filter((item) => item.qty > 0).map((item) => ({ productId: item.id, quantity: item.qty }));
     if (!orderItems.length) return;
+    
     setCheckoutError(null);
     setPlacingOrder(true);
+    
     try {
-      await api.createOrder({ items: orderItems });
-      clear();
-      navigate("/orders");
+      // 1. Create the order
+      const order = await api.createOrder({ items: orderItems });
+      
+      // 2. Create the payment record and get Razorpay Order ID
+      const paymentInfo = await api.createPayment(order.id);
+      
+      // 3. Get user info for prefill
+      const user = await api.getMe();
+
+      // 4. Initialize Razorpay Checkout
+      const options = {
+        key: "rzp_test_SndQ0U2INyJD3A", // Razorpay Key ID
+        amount: paymentInfo.amount,
+        currency: "INR",
+        name: "farmes",
+        description: `Order #${order.id.slice(0, 8)}`,
+        order_id: paymentInfo.razorpayOrderId,
+        handler: async (response: any) => {
+          try {
+            setPlacingOrder(true);
+            await api.verifyPayment({
+              paymentId: paymentInfo.id,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+            clear();
+            navigate("/orders");
+          } catch (verifyErr) {
+            setCheckoutError("Payment verification failed. Please contact support.");
+          } finally {
+            setPlacingOrder(false);
+          }
+        },
+        prefill: {
+          name: user.name || "",
+          contact: user.phone || "",
+        },
+        theme: {
+          color: "#2D5A27", // Primary green
+        },
+        modal: {
+          ondismiss: () => {
+            setPlacingOrder(false);
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', (response: any) => {
+        setCheckoutError(response.error.description || "Payment failed.");
+        setPlacingOrder(false);
+      });
+      rzp.open();
+
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Unable to place order.";
-      // Session expired — clear local state and redirect to login
+      const message = err instanceof Error ? err.message : "Unable to initiate checkout.";
       if (message.toLowerCase().includes("session expired") || message.toLowerCase().includes("log in again")) {
         navigate("/login?next=/cart");
         return;
       }
       setCheckoutError(message);
-    } finally {
       setPlacingOrder(false);
     }
   };
