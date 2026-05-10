@@ -173,6 +173,16 @@ async function request<T>(path: string, init?: RequestInit, requireAuth = false)
     payload = null;
   }
 
+  // Auto-clear stale session when the backend explicitly rejects the token
+  if (res.status === 401) {
+    authToken = null;
+    sessionLoaded = true;
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    const messageRaw = payload && "error" in payload ? payload.error?.message : null;
+    const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;
+    throw new Error(message || "Session expired. Please log in again.");
+  }
+
   if (!payload || !res.ok || !("success" in payload) || payload.success === false) {
     const messageRaw = payload && "error" in payload ? payload.error?.message : "Request failed";
     const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;

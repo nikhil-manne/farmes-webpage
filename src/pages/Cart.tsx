@@ -72,7 +72,13 @@ const Cart = () => {
       clear();
       navigate("/orders");
     } catch (err) {
-      setCheckoutError(err instanceof Error ? err.message : "Unable to place order.");
+      const message = err instanceof Error ? err.message : "Unable to place order.";
+      // Session expired — clear local state and redirect to login
+      if (message.toLowerCase().includes("session expired") || message.toLowerCase().includes("log in again")) {
+        navigate("/login?next=/cart");
+        return;
+      }
+      setCheckoutError(message);
     } finally {
       setPlacingOrder(false);
     }
