@@ -151,7 +151,7 @@ const Home = () => {
           farm<span className="text-primary">es</span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-bold text-muted-foreground md:flex">
-          <a href="/about" className="hover:text-primary transition-colors">Our Story</a>
+          <a href="/about-us" className="hover:text-primary transition-colors">Our Story</a>
           <a href="/how-it-works" className="hover:text-primary transition-colors">How it Works</a>
           <Link to="/market" className="hover:text-primary transition-colors">Market</Link>
           <Link to="/farmers" className="hover:text-primary transition-colors">Farmers</Link>
