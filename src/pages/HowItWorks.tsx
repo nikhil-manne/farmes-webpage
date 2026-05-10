@@ -20,7 +20,7 @@ const HowItWorks = () => {
     {
       day: "Mon & Thu",
       time: "9:00 PM",
-      title: "Order Recieved to farmers",
+      title: "Notified to farmers",
       description: "Customer orders from across the network are aggregated and instantly shared with our partnered farmers through the Farmes Smart Dashboard.",
       icon: Smartphone,
       color: "bg-blue-500"
