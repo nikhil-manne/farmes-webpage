@@ -5,9 +5,16 @@ import {
   Smartphone, BarChart3, Cloud
 } from 'lucide-react';
 
+import { useProcessModal } from '@/store/processModal';
+
 export const RoadmapHero = () => {
+  const openProcessModal = useProcessModal((s) => s.open);
+
   return (
-    <div className="relative w-full aspect-[4/3] md:aspect-video lg:aspect-[16/9] bg-gradient-to-br from-primary/5 to-secondary/5 rounded-[2.5rem] overflow-hidden border border-border shadow-2xl group">
+    <div 
+      onClick={openProcessModal}
+      className="relative w-full aspect-[4/3] md:aspect-video lg:aspect-[16/9] bg-gradient-to-br from-primary/5 to-secondary/5 rounded-[2.5rem] overflow-hidden border border-border shadow-2xl group cursor-pointer hover:border-primary/30 transition-colors"
+    >
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-30" />
       
@@ -113,6 +120,14 @@ export const RoadmapHero = () => {
         <div className="flex items-center gap-2">
           <Package className="w-3 h-3 text-primary-muted" />
           <span className="text-[10px] font-bold uppercase tracking-tighter">Direct Chain</span>
+        </div>
+      </div>
+
+      {/* Hover Indicator */}
+      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 z-30">
+        <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl border border-primary/20 flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+          <Zap className="w-5 h-5 text-primary animate-pulse" />
+          <span className="font-bold text-sm text-primary">Click to See How It Works</span>
         </div>
       </div>
 
