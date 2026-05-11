@@ -111,19 +111,19 @@ const Product = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[720px] -translate-x-1/2 border-t border-border bg-background/95 px-5 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-xl lg:left-auto lg:right-8 lg:max-w-[360px] lg:translate-x-0 lg:rounded-t-lg lg:border">
+      <div className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] left-1/2 z-50 w-[calc(100%-32px)] max-w-[680px] -translate-x-1/2 rounded-2xl border border-white/20 bg-background/80 p-3 shadow-elevated backdrop-blur-xl lg:bottom-8 lg:left-auto lg:right-8 lg:w-full lg:max-w-[360px] lg:translate-x-0 lg:bg-background/95">
         <button
           onClick={() => {
             add(product.id);
             navigate("/cart");
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-4 font-display text-sm font-bold text-primary-foreground shadow-card transition-transform active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-4 font-display text-base font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
         >
-          <ShoppingBag className="h-4 w-4" />
-          Add to cart - Rs {product.pricePerKg}
+          <ShoppingBag className="h-5 w-5" />
+          Add to basket — Rs {product.pricePerKg}
         </button>
       </div>
-      <div className="h-24" />
+      <div className="h-32" />
     </div>
   );
 };
