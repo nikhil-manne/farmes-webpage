@@ -17,6 +17,7 @@ import { SectionHeading } from "@/components/home/SectionHeading";
 import { ProcessStep } from "@/components/home/ProcessStep";
 import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
+import { ProcessFlowModal } from "@/components/home/ProcessFlowModal";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -73,6 +74,7 @@ const Home = () => {
   const add = useCart((s) => s.add);
   const [quickAddProduct, setQuickAddProduct] = useState<UiProduct | null>(null);
   const [selectedSize, setSelectedSize] = useState<number>(1.0);
+  const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true });
 
@@ -217,9 +219,12 @@ const Home = () => {
               Shop Fresh Harvest
               <ArrowRight className="h-5 w-5" />
             </Link>
-            <a href="#how-it-works" className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20">
+            <button 
+              onClick={() => setIsProcessModalOpen(true)}
+              className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
+            >
               See Our Process
-            </a>
+            </button>
           </div>
           {/* Highlights with stagger */}
           <div ref={highlightsStagger} className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
@@ -544,6 +549,11 @@ const Home = () => {
           </div>
         </div>
       )}
+      {/* Process Flow Modal */}
+      <ProcessFlowModal 
+        isOpen={isProcessModalOpen} 
+        onClose={() => setIsProcessModalOpen(false)} 
+      />
     </div>
   );
 };
