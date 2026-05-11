@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { X, ChevronRight, ChevronLeft, ShoppingBag, Bell, Leaf, Package, Truck, Home as HomeIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { X, ChevronRight, ChevronLeft, ShoppingBag, Bell, Leaf, Package, Truck, Home as HomeIcon, Store } from "lucide-react";
 import uncleOrdering from "@/assets/uncle ordering.png";
 import farmerReceiving from "@/assets/farmer recieving.png";
 import harvesting from "@/assets/harvesting.png";
@@ -58,6 +59,7 @@ interface ProcessFlowModalProps {
 }
 
 export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -194,11 +196,11 @@ export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => 
                 
                 {currentStep === steps.length - 1 ? (
                   <button 
-                    onClick={onClose}
+                    onClick={() => { onClose(); navigate("/market"); }}
                     className="flex-1 h-12 md:h-16 flex items-center justify-center gap-2 rounded-xl md:rounded-2xl bg-primary px-6 md:px-8 text-sm md:text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 hover:brightness-110"
                   >
-                    Finish
-                    <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
+                    Go to Market
+                    <Store className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                 ) : (
                   <button 
