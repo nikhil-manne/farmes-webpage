@@ -173,6 +173,7 @@ export type UiProduct = {
   category: string;
   description: string;
   tags: string[];
+  allowedPackSizes: number[];
 };
 
 export function getProductImage(productName: string) {
@@ -217,6 +218,7 @@ export function toUiProduct(product: BackendProduct): UiProduct {
     category: getProductCategory(normalized.key),
     description: `${normalized.label} sourced from ${product.farmer.villageOrAddress}.`,
     tags: ["Fresh", "Farm-direct"],
+    allowedPackSizes: (product.allowedPackSizes || ["1.0"]).map(Number),
   };
 }
 

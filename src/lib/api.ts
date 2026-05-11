@@ -42,6 +42,7 @@ export type BackendProduct = {
     harvestQtyKg: number;
     landAssignedAcres: number;
   }>;
+  allowedPackSizes?: string[];
 };
 
 export type BackendFarmer = {

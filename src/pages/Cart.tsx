@@ -136,6 +136,8 @@ const Cart = () => {
     }
   };
 
+  const formatSize = (kg: number) => (kg < 1 ? `${kg * 1000}g` : `${kg}kg`);
+
   return (
     <div>
       <header className="px-5 pt-8 lg:px-0">
@@ -174,16 +176,24 @@ const Cart = () => {
               <h4 className="truncate font-display text-sm font-semibold">{item.name}</h4>
               <p className="truncate text-[11px] text-muted-foreground">by {item.farmerName}</p>
               <p className="mt-1 font-display text-sm font-bold">
-                Rs {item.pricePerKg * item.qty}
-                <span className="ml-1 text-[10px] font-medium text-muted-foreground">(Rs {item.pricePerKg}/{item.unit})</span>
+                Rs {Math.round(item.pricePerKg * item.qty)}
+                <span className="ml-1 text-[10px] font-medium text-muted-foreground">(Rs {item.pricePerKg}/kg)</span>
               </p>
             </div>
             <div className="flex items-center gap-1 rounded-md border border-border bg-background px-1 py-1">
-              <button onClick={() => setQty(item.id, item.qty - 1)} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" aria-label="Decrease">
-                {item.qty === 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+              <button 
+                onClick={() => setQty(item.id, Math.max(0, item.qty - (item.qty <= 1 && item.qty > 0 ? item.qty : 1)))} 
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" 
+                aria-label="Decrease"
+              >
+                {item.qty <= 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
               </button>
-              <span className="w-5 text-center font-display text-sm font-bold">{item.qty}</span>
-              <button onClick={() => setQty(item.id, item.qty + 1)} className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground" aria-label="Increase">
+              <span className="min-w-[40px] px-1 text-center font-display text-[12px] font-bold">{formatSize(item.qty)}</span>
+              <button 
+                onClick={() => setQty(item.id, item.qty + 1)} 
+                className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground" 
+                aria-label="Increase"
+              >
                 <Plus className="h-3.5 w-3.5" />
               </button>
             </div>

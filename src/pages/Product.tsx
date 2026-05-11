@@ -14,6 +14,7 @@ const Product = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const add = useCart((s) => s.add);
+  const [selectedSize, setSelectedSize] = useState<number>(1.0);
 
   useEffect(() => {
     if (!id) return;
@@ -33,8 +34,18 @@ const Product = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
+  useEffect(() => {
+    if (product?.allowedPackSizes?.length) {
+      const defaultSize = product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
+      setSelectedSize(defaultSize);
+    }
+  }, [product]);
+
   if (loading) return <Loader text="Loading product..." />;
   if (!product) return <div className="p-6 text-sm text-muted-foreground">{error || "Product not found."}</div>;
+
+  const formatSize = (kg: number) => (kg < 1 ? `${kg * 1000}g` : `${kg}kg`);
+
   const farmerSupply = rawProduct?.farmerSupply?.length
     ? rawProduct.farmerSupply
     : [
@@ -70,13 +81,34 @@ const Product = () => {
 
         <h1 className="mt-3 font-display text-3xl font-bold leading-tight">{product.name}</h1>
         <div className="mt-1 flex items-end gap-2">
-          <p className="font-display text-2xl font-bold text-primary">Rs {product.pricePerKg}</p>
-          <p className="pb-1 text-sm text-muted-foreground">per {product.unit}</p>
+          <p className="font-display text-2xl font-bold text-primary">Rs {Math.round(product.pricePerKg * selectedSize)}</p>
+          <p className="pb-1 text-sm text-muted-foreground">for {formatSize(selectedSize)}</p>
         </div>
 
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">{product.description}</p>
 
-        <div className="mt-5 max-w-xl space-y-2">
+        {product.allowedPackSizes.length > 0 && (
+          <div className="mt-6 space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary">Select Quantity</p>
+            <div className="flex flex-wrap gap-2">
+              {product.allowedPackSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`rounded-xl border px-4 py-2.5 text-sm font-bold transition-all active:scale-95 ${
+                    selectedSize === size
+                      ? "border-primary bg-primary text-primary-foreground shadow-md"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/50"
+                  }`}
+                >
+                  {formatSize(size)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="mt-8 max-w-xl space-y-2">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary">Grown by</p>
           {farmerSupply.map((farmer) => {
             const farmerName = farmer.farmerName || farmer.farmName || "Farm Partner";
@@ -102,13 +134,13 @@ const Product = () => {
       <div className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] left-1/2 z-50 w-[calc(100%-32px)] max-w-[680px] -translate-x-1/2 rounded-2xl border border-white/20 bg-background/80 p-3 shadow-elevated backdrop-blur-xl lg:bottom-8 lg:left-auto lg:right-8 lg:w-full lg:max-w-[360px] lg:translate-x-0 lg:bg-background/95">
         <button
           onClick={() => {
-            add(product.id);
+            add(product.id, selectedSize);
             navigate("/cart");
           }}
           className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-4 font-display text-base font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
         >
           <ShoppingBag className="h-5 w-5" />
-          Add to basket — Rs {product.pricePerKg}
+          Add to basket — Rs {Math.round(product.pricePerKg * selectedSize)}
         </button>
       </div>
       <div className="h-32" />
