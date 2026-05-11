@@ -152,11 +152,11 @@ export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => 
             ))}
             
             {/* Step Number Overlay */}
-            <div className="absolute top-10 left-10 flex items-center gap-4 z-20">
-              <div className={`w-16 h-16 rounded-2xl ${step.color} flex items-center justify-center text-white shadow-2xl animate-float`}>
-                <step.icon className="w-8 h-8" />
+            <div className="absolute bottom-6 left-6 md:top-10 md:left-10 md:bottom-auto flex items-center gap-4 z-20">
+              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${step.color} flex items-center justify-center text-white shadow-2xl animate-float`}>
+                <step.icon className="w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <div className="glass-card px-5 py-2.5 rounded-2xl border border-white/30 text-white font-bold text-sm backdrop-blur-md shadow-xl">
+              <div className="glass-card px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl border border-white/30 text-white font-bold text-xs md:text-sm backdrop-blur-md shadow-xl">
                 Step {currentStep + 1} of 6
               </div>
             </div>
