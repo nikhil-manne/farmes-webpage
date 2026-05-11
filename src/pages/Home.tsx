@@ -18,6 +18,7 @@ import { ProcessStep } from "@/components/home/ProcessStep";
 import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { useProcessModal } from "@/store/processModal";
+import { RoadmapHero } from "@/components/home/RoadmapHero";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -237,15 +238,8 @@ const Home = () => {
           </div>
         </div>
         <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-          <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-2xl animate-float">
-            <img src={heroHarvest} alt="Farm to City Roadmap" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8 p-6 glass-card rounded-2xl border border-white/20 backdrop-blur-md bg-white/10 text-white">
-              <p className="text-sm font-bold uppercase tracking-widest mb-1 opacity-80">Direct Connection</p>
-              <h3 className="text-2xl font-display font-bold">The 12-Hour Journey</h3>
-              <p className="text-sm opacity-90 mt-1">From farm soil to urban table, with zero storage.</p>
-            </div>
-          </div>
+          <RoadmapHero />
+          
           {/* Decorative elements with glow drift */}
           <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl glow-drift" />
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl glow-drift" style={{ animationDelay: '3s' }} />

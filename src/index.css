@@ -261,6 +261,26 @@
     stroke-dashoffset: 0;
   }
 
+  /* Roadmap specific animations */
+  @keyframes moveAlongPath {
+    0% { offset-distance: 0%; transform: scale(1) rotate(0deg); }
+    10% { transform: scale(1.1) rotate(5deg); }
+    45% { transform: scale(1.1) rotate(-5deg); }
+    50% { offset-distance: 50%; transform: scale(1) rotate(0deg); }
+    60% { transform: scale(1.1) rotate(5deg); }
+    90% { transform: scale(1.1) rotate(-5deg); }
+    100% { offset-distance: 100%; transform: scale(1) rotate(0deg); }
+  }
+
+  .animate-pulse-path {
+    animation: pulsePath 4s linear infinite;
+  }
+
+  @keyframes pulsePath {
+    0% { stroke-dashoffset: 1000; }
+    100% { stroke-dashoffset: 0; }
+  }
+
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .reveal-fade-up, .reveal-fade-down, .reveal-slide-left,
