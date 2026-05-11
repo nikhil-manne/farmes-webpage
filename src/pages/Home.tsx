@@ -23,7 +23,7 @@ import { useProcessModal } from "@/store/processModal";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
 // Assets
-import heroHarvest from "@/assets/farm_to_city_roadmap.png";
+import heroHarvest from "@/assets/farm_to_city_roadmap.jpg";
 import logisticsImg from "@/assets/logistics.png";
 import farmerSuccess from "@/assets/farmer_success.png";
 import farmHero from "@/assets/farm-1.jpg";
