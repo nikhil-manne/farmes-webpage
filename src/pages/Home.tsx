@@ -465,7 +465,7 @@ const Home = () => {
       </section>
 
       {/* Footer Branding — fade up reveal */}
-      <footer className="px-5 lg:px-0 py-12 border-t border-border">
+      <footer className="hidden lg:block px-5 lg:px-0 py-12 border-t border-border">
         <div
           ref={footerReveal.ref}
           className={`reveal-fade-up ${footerReveal.isVisible ? 'visible' : ''}`}

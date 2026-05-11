@@ -5,8 +5,6 @@ import { useCart } from "@/store/cart";
 const tabs = [
   { to: "/", label: "Home", icon: Home, end: true },
   { to: "/market", label: "Market", icon: Store },
-  { to: "/how-it-works", label: "How it Works", icon: HelpCircle },
-  { to: "/about-us", label: "About Us", icon: Info },
   { to: "/orders", label: "Orders", icon: Package },
   { to: "/cart", label: "Cart", icon: ShoppingBag },
   { to: "/profile", label: "Profile", icon: User },
