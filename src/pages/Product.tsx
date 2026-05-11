@@ -97,18 +97,6 @@ const Product = () => {
           })}
         </div>
 
-        <div className="mt-5 grid max-w-xl grid-cols-3 gap-3 rounded-lg border border-border bg-card p-4">
-          {[
-            { label: "Harvest", value: "Fresh" },
-            { label: "Delivery", value: "Next slot" },
-            { label: "Unit", value: product.unit },
-          ].map((item) => (
-            <div key={item.label} className="text-center">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
-              <p className="mt-1 font-display text-sm font-bold">{item.value}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] left-1/2 z-50 w-[calc(100%-32px)] max-w-[680px] -translate-x-1/2 rounded-2xl border border-white/20 bg-background/80 p-3 shadow-elevated backdrop-blur-xl lg:bottom-8 lg:left-auto lg:right-8 lg:w-full lg:max-w-[360px] lg:translate-x-0 lg:bg-background/95">
