@@ -16,6 +16,10 @@ import { Loader } from "@/components/ui/loader";
 import { SectionHeading } from "@/components/home/SectionHeading";
 import { ProcessStep } from "@/components/home/ProcessStep";
 import { BenefitCard } from "@/components/home/BenefitCard";
+import { ScrollReveal } from "@/components/home/ScrollReveal";
+
+// Hooks
+import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
 // Assets
 import heroHarvest from "@/assets/hero_harvest.png";
@@ -72,6 +76,16 @@ const Home = () => {
 
   const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
   const scrollNext = () => emblaApi && emblaApi.scrollNext();
+
+  // Scroll reveal refs for sections
+  const aboutImageReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
+  const aboutContentReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
+  const processStepsStagger = useStaggerReveal<HTMLDivElement>({ staggerDelay: 180 });
+  const benefitsStagger = useStaggerReveal<HTMLDivElement>({ staggerDelay: 250 });
+  const marketReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
+  const ctaReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.2 });
+  const footerReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.15 });
+  const highlightsStagger = useStaggerReveal<HTMLDivElement>({ staggerDelay: 150 });
 
   useEffect(() => {
     setLoading(true);
@@ -163,7 +177,7 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section — uses built-in tailwind animate-in for above-fold speed */}
       <section className="px-5 lg:px-0 grid lg:grid-cols-2 gap-12 items-center">
         <div className="animate-in fade-in slide-in-from-left-8 duration-1000">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary">
@@ -186,9 +200,10 @@ const Home = () => {
               See Our Process
             </a>
           </div>
-          <div className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
+          {/* Highlights with stagger */}
+          <div ref={highlightsStagger} className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
             {highlights.map((item) => (
-              <div key={item.label}>
+              <div key={item.label} data-reveal>
                 <dt className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{item.label}</dt>
                 <dd className="mt-1 font-display text-2xl font-extrabold text-foreground">{item.value}</dd>
               </div>
@@ -205,23 +220,33 @@ const Home = () => {
               <p className="text-sm opacity-90 mt-1">Harvested 4 hours ago in Medak District</p>
             </div>
           </div>
-          {/* Decorative elements */}
-          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl animate-pulse delay-700" />
+          {/* Decorative elements with glow drift */}
+          <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl glow-drift" />
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl glow-drift" style={{ animationDelay: '3s' }} />
         </div>
       </section>
 
-      {/* No Storage USP Section */}
+      {/* No Storage USP Section — scroll reveal with opposing slide directions */}
       <section id="about" className="px-5 lg:px-0 py-20 bg-primary/5 rounded-[3rem] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none" />
+        {/* Decorative floating orbs */}
+        <div className="absolute top-20 left-10 w-24 h-24 bg-secondary/10 rounded-full blur-2xl glow-drift" />
+        <div className="absolute bottom-16 right-16 w-32 h-32 bg-primary/10 rounded-full blur-2xl glow-drift" style={{ animationDelay: '4s' }} />
+        
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-          <div className="order-2 lg:order-1">
+          <div
+            ref={aboutImageReveal.ref}
+            className={`order-2 lg:order-1 reveal-rotate-left ${aboutImageReveal.isVisible ? 'visible' : ''}`}
+          >
             <div className="relative rounded-3xl overflow-hidden shadow-xl aspect-square max-w-md mx-auto lg:mx-0">
                <img src={logisticsImg} alt="Logistics" className="w-full h-full object-cover" />
                <div className="absolute inset-0 bg-primary/10" />
             </div>
           </div>
-          <div className="order-1 lg:order-2">
+          <div
+            ref={aboutContentReveal.ref}
+            className={`order-1 lg:order-2 reveal-slide-right ${aboutContentReveal.isVisible ? 'visible' : ''}`}
+          >
             <SectionHeading 
               badge="Zero Storage Policy"
               title="We Don't Store. We Deliver."
@@ -233,74 +258,89 @@ const Home = () => {
                 { icon: Calendar, text: "Scheduled Tue/Fri deliveries enable dawn-to-door logistics." },
                 { icon: ShieldCheck, text: "Minimal handling—from farm gate to you in hours." }
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-primary shadow-soft group-hover:scale-110 transition-transform">
-                    <item.icon className="w-6 h-6" />
+                <ScrollReveal key={i} animation="fade-up" delay={(i + 1) * 100 as 100 | 200 | 300}>
+                  <div className="flex items-center gap-4 group">
+                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-primary shadow-soft group-hover:scale-110 transition-transform">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <p className="font-bold text-foreground">{item.text}</p>
                   </div>
-                  <p className="font-bold text-foreground">{item.text}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works — staggered reveal for steps */}
       <section id="how-it-works" className="px-5 lg:px-0">
-        <SectionHeading 
-          align="center"
-          badge="Our Logistics Network"
-          title="The Journey from Farm to Fork"
-          description="We've built a scalable supply-chain infrastructure powered by AI to ensure the fastest delivery network in the agricultural sector."
-          className="mb-16"
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
+        <ScrollReveal animation="blur">
+          <SectionHeading 
+            align="center"
+            badge="Our Logistics Network"
+            title="The Journey from Farm to Fork"
+            description="We've built a scalable supply-chain infrastructure powered by AI to ensure the fastest delivery network in the agricultural sector."
+            className="mb-16"
+          />
+        </ScrollReveal>
+        <div ref={processStepsStagger} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
           {/* Connecting line for desktop */}
           <div className="hidden lg:block absolute top-8 left-0 w-full h-0.5 bg-border -z-10" />
           {processSteps.map((step) => (
-            <ProcessStep key={step.stepNumber} {...step} />
+            <div key={step.stepNumber} data-reveal>
+              <ProcessStep {...step} />
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Stakeholder Benefits */}
+      {/* Stakeholder Benefits — staggered cards */}
       <section className="px-5 lg:px-0 space-y-12">
-        <SectionHeading 
-          badge="Mutual Growth"
-          title="Empowering Everyone in the Chain"
-          description="Our platform is designed to create a sustainable ecosystem that benefits both those who grow our food and those who eat it."
-        />
-        <div className="grid gap-8">
-          <BenefitCard 
-            type="farmer"
-            title="For Our Farmers"
-            image={farmerSuccess}
-            items={[
-              "Direct access to urban markets without middlemen.",
-              "Consistent demand through data-driven forecasting.",
-              "Transparent and fair pricing for every harvest.",
-              "Faster settlements directly to bank accounts.",
-              "Reduced wastage through order based harvest."
-            ]}
+        <ScrollReveal animation="fade-up">
+          <SectionHeading 
+            badge="Mutual Growth"
+            title="Empowering Everyone in the Chain"
+            description="Our platform is designed to create a sustainable ecosystem that benefits both those who grow our food and those who eat it."
           />
-          <BenefitCard 
-            type="user"
-            title="For Our Customers"
-            image={farmHero}
-            items={[
-              "Weekly scheduled deliveries every Tuesday and Friday.",
-              "Subscription model for automated recurring essentials.",
-              "Autopay enabled—cart items auto-order at cutoff time.",
-              "Real-time tracking from farm harvest to your doorstep.",
-              "Transparent sourcing—no middlemen or Cold storages."
-            ]}
-          />
+        </ScrollReveal>
+        <div ref={benefitsStagger} className="grid gap-8">
+          <div data-reveal>
+            <BenefitCard 
+              type="farmer"
+              title="For Our Farmers"
+              image={farmerSuccess}
+              items={[
+                "Direct access to urban markets without middlemen.",
+                "Consistent demand through data-driven forecasting.",
+                "Transparent and fair pricing for every harvest.",
+                "Faster settlements directly to bank accounts.",
+                "Reduced wastage through order based harvest."
+              ]}
+            />
+          </div>
+          <div data-reveal>
+            <BenefitCard 
+              type="user"
+              title="For Our Customers"
+              image={farmHero}
+              items={[
+                "Weekly scheduled deliveries every Tuesday and Friday.",
+                "Subscription model for automated recurring essentials.",
+                "Autopay enabled—cart items auto-order at cutoff time.",
+                "Real-time tracking from farm harvest to your doorstep.",
+                "Transparent sourcing—no middlemen or Cold storages."
+              ]}
+            />
+          </div>
         </div>
       </section>
 
-      {/* Market Section */}
+      {/* Market Section — scale reveal */}
       <section id="market" className="px-5 lg:px-0 py-20 bg-secondary/5 rounded-[3rem]">
-        <div className="max-w-6xl mx-auto">
+        <div
+          ref={marketReveal.ref}
+          className={`max-w-6xl mx-auto reveal-fade-up ${marketReveal.isVisible ? 'visible' : ''}`}
+        >
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-8">
             <div>
               <SectionHeading 
@@ -328,8 +368,16 @@ const Home = () => {
 
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
-              {filtered.map((vegetable) => (
-                <article key={vegetable.id} className="flex-[0_0_280px] min-w-0 group overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:shadow-elevated">
+              {filtered.map((vegetable, idx) => (
+                <article
+                  key={vegetable.id}
+                  className="flex-[0_0_280px] min-w-0 group overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all hover:shadow-elevated"
+                  style={{
+                    opacity: marketReveal.isVisible ? 1 : 0,
+                    transform: marketReveal.isVisible ? 'translateY(0)' : 'translateY(30px)',
+                    transition: `opacity 0.5s cubic-bezier(0.16,1,0.3,1) ${idx * 80}ms, transform 0.5s cubic-bezier(0.16,1,0.3,1) ${idx * 80}ms`
+                  }}
+                >
                   <Link to={`/product/${vegetable.id}`} className="block">
                     <div className="aspect-square overflow-hidden bg-muted relative">
                       <img src={vegetable.image} alt={vegetable.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -363,11 +411,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section — scale + blur reveal */}
       <section className="px-5 lg:px-0">
-        <div className="relative rounded-[3rem] bg-primary p-12 md:p-20 text-center overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -mt-32 -mr-32 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mb-32 -ml-32 animate-pulse delay-1000" />
+        <div
+          ref={ctaReveal.ref}
+          className={`relative rounded-[3rem] bg-primary p-12 md:p-20 text-center overflow-hidden reveal-scale ${ctaReveal.isVisible ? 'visible' : ''}`}
+        >
+          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -mt-32 -mr-32 glow-drift" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mb-32 -ml-32 glow-drift" style={{ animationDelay: '5s' }} />
           
           <div className="relative z-10 max-w-3xl mx-auto">
             <h2 className="font-display text-4xl md:text-5xl font-extrabold text-white leading-tight">
@@ -388,34 +439,39 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer Branding */}
+      {/* Footer Branding — fade up reveal */}
       <footer className="px-5 lg:px-0 py-12 border-t border-border">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <Link to="/" className="font-display text-3xl font-extrabold tracking-normal">
-              farm<span className="text-primary">es</span>
-            </Link>
-            <p className="mt-2 text-sm text-muted-foreground max-w-xs">
-              Empowering farmers, delighting consumers. A technology-driven fresh commerce network.
-            </p>
+        <div
+          ref={footerReveal.ref}
+          className={`reveal-fade-up ${footerReveal.isVisible ? 'visible' : ''}`}
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left">
+              <Link to="/" className="font-display text-3xl font-extrabold tracking-normal">
+                farm<span className="text-primary">es</span>
+              </Link>
+              <p className="mt-2 text-sm text-muted-foreground max-w-xs">
+                Empowering farmers, delighting consumers. A technology-driven fresh commerce network.
+              </p>
+            </div>
+            <div className="flex items-center gap-8">
+               <div className="flex flex-col items-center">
+                  <Smile className="w-8 h-8 text-secondary mb-1" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Happy Farmers</span>
+               </div>
+               <div className="flex flex-col items-center">
+                  <Leaf className="w-8 h-8 text-primary mb-1" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Always Fresh</span>
+               </div>
+               <div className="flex flex-col items-center">
+                  <Truck className="w-8 h-8 text-primary-muted mb-1" />
+                  <span className="text-[10px] font-black uppercase tracking-widest">Direct Delivery</span>
+               </div>
+            </div>
           </div>
-          <div className="flex items-center gap-8">
-             <div className="flex flex-col items-center">
-                <Smile className="w-8 h-8 text-secondary mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Happy Farmers</span>
-             </div>
-             <div className="flex flex-col items-center">
-                <Leaf className="w-8 h-8 text-primary mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Always Fresh</span>
-             </div>
-             <div className="flex flex-col items-center">
-                <Truck className="w-8 h-8 text-primary-muted mb-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Direct Delivery</span>
-             </div>
+          <div className="mt-12 text-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
+            © 2026 Farmes Agricultural Logistics Network. All Rights Reserved.
           </div>
-        </div>
-        <div className="mt-12 text-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
-          © 2026 Farmes Agricultural Logistics Network. All Rights Reserved.
         </div>
       </footer>
     </div>
