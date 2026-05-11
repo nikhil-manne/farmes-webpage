@@ -17,7 +17,7 @@ import { SectionHeading } from "@/components/home/SectionHeading";
 import { ProcessStep } from "@/components/home/ProcessStep";
 import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
-import { ProcessFlowModal } from "@/components/home/ProcessFlowModal";
+import { useProcessModal } from "@/store/processModal";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -74,7 +74,7 @@ const Home = () => {
   const add = useCart((s) => s.add);
   const [quickAddProduct, setQuickAddProduct] = useState<UiProduct | null>(null);
   const [selectedSize, setSelectedSize] = useState<number>(1.0);
-  const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
+  const openProcessModal = useProcessModal((s) => s.open);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true });
 
@@ -189,7 +189,7 @@ const Home = () => {
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-bold text-muted-foreground md:flex">
           <a href="/about-us" className="hover:text-primary transition-colors">Our Story</a>
-          <a href="/how-it-works" className="hover:text-primary transition-colors">How it Works</a>
+          <button onClick={openProcessModal} className="hover:text-primary transition-colors">How it Works</button>
           <Link to="/market" className="hover:text-primary transition-colors">Market</Link>
           <Link to="/farmers" className="hover:text-primary transition-colors">Farmers</Link>
         </nav>
@@ -220,7 +220,7 @@ const Home = () => {
               <ArrowRight className="h-5 w-5" />
             </Link>
             <button 
-              onClick={() => setIsProcessModalOpen(true)}
+              onClick={openProcessModal}
               className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
             >
               See Our Process
@@ -549,11 +549,6 @@ const Home = () => {
           </div>
         </div>
       )}
-      {/* Process Flow Modal */}
-      <ProcessFlowModal 
-        isOpen={isProcessModalOpen} 
-        onClose={() => setIsProcessModalOpen(false)} 
-      />
     </div>
   );
 };

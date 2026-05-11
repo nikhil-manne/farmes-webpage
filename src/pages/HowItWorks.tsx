@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useProcessModal } from "@/store/processModal";
 
 // Assets
 import heroImage from "@/assets/how-it-works-hero.png";
@@ -103,7 +104,10 @@ const HowItWorks = () => {
                 Start Ordering
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="h-14 inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted">
+              <button 
+                onClick={useProcessModal.getState().open}
+                className="h-14 inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted"
+              >
                 <PlayCircle className="h-5 w-5" />
                 Watch Process
               </button>

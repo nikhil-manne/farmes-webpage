@@ -95,10 +95,10 @@ export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => 
       />
       
       {/* Modal Container */}
-      <div className="relative w-full max-w-6xl aspect-[16/10] md:aspect-[16/9] bg-card rounded-[2.5rem] shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 fade-in duration-500 flex flex-col md:flex-row">
+      <div className="relative w-full max-w-6xl h-[90vh] md:h-auto md:aspect-[16/9] bg-card rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 fade-in duration-500 flex flex-col md:flex-row">
         
         {/* Progress Bar (Top) */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-border z-20">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-border z-30">
           <div 
             className="h-full bg-primary transition-all duration-700 ease-out"
             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -127,10 +127,10 @@ export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => 
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col md:flex-row relative">
+        <div className="flex-1 flex flex-col md:flex-row relative overflow-hidden">
           
           {/* Image Section */}
-          <div className="flex-1 relative overflow-hidden group">
+          <div className="h-[35vh] md:h-full md:flex-1 relative overflow-hidden group shrink-0">
             {steps.map((s, idx) => (
               <div 
                 key={idx}
@@ -163,50 +163,50 @@ export const ProcessFlowModal = ({ isOpen, onClose }: ProcessFlowModalProps) => 
           </div>
 
           {/* Text Section */}
-          <div className="w-full md:w-[400px] xl:w-[500px] p-10 md:p-16 flex flex-col justify-center bg-card relative z-10">
-            <div key={currentStep} className="animate-in slide-in-from-right-12 fade-in duration-700 ease-out">
-              <div className="flex items-center gap-2 mb-6">
+          <div className="flex-1 overflow-y-auto p-6 md:p-16 flex flex-col bg-card relative z-10 custom-scrollbar">
+            <div key={currentStep} className="animate-in slide-in-from-right-12 fade-in duration-700 ease-out flex-1 flex flex-col">
+              <div className="flex items-center gap-2 mb-4 md:mb-6">
                 <span className={`w-2 h-2 rounded-full animate-ping ${step.color}`} />
                 <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${step.color.replace('bg-', 'text-')}`}>
                   The Journey
                 </span>
               </div>
               
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-8 tracking-tight">
+              <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 md:mb-8 tracking-tight">
                 {step.title}
               </h2>
               
-              <p className="text-xl text-muted-foreground leading-relaxed mb-12 font-medium">
+              <p className="text-base md:text-xl text-muted-foreground leading-relaxed mb-8 md:mb-12 font-medium">
                 {step.description}
               </p>
 
               {/* Navigation Controls */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4 md:gap-6 mt-auto pt-6 border-t border-border/50">
                 <button 
                   onClick={prevStep}
                   disabled={currentStep === 0}
-                  className={`h-16 w-16 flex items-center justify-center rounded-2xl border-2 border-border transition-all ${
+                  className={`h-12 w-12 md:h-16 md:w-16 flex items-center justify-center rounded-xl md:rounded-2xl border-2 border-border transition-all ${
                     currentStep === 0 ? "opacity-20 cursor-not-allowed" : "hover:bg-muted hover:border-primary/20 active:scale-95 shadow-sm"
                   }`}
                 >
-                  <ChevronLeft className="w-8 h-8" />
+                  <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
                 </button>
                 
                 {currentStep === steps.length - 1 ? (
                   <button 
                     onClick={onClose}
-                    className="flex-1 h-16 flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 hover:brightness-110"
+                    className="flex-1 h-12 md:h-16 flex items-center justify-center gap-2 rounded-xl md:rounded-2xl bg-primary px-6 md:px-8 text-sm md:text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 hover:brightness-110"
                   >
-                    Start Shopping
-                    <ShoppingBag className="w-5 h-5" />
+                    Finish
+                    <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
                   </button>
                 ) : (
                   <button 
                     onClick={nextStep}
-                    className="flex-1 h-16 flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 hover:brightness-110"
+                    className="flex-1 h-12 md:h-16 flex items-center justify-center gap-2 rounded-xl md:rounded-2xl bg-primary px-6 md:px-8 text-sm md:text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 hover:brightness-110"
                   >
-                    Next Stage
-                    <ChevronRight className="w-6 h-6" />
+                    Next
+                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
                 )}
               </div>
