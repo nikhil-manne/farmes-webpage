@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, CreditCard, FileText, HelpCircle, LogOut, MapPin, Pencil, Phone, Shield, User as UserIcon } from "lucide-react";
+import { ChevronRight, FileText, HelpCircle, LogOut, MapPin, Pencil, Phone, Shield, User as UserIcon } from "lucide-react";
 import { api } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
 
@@ -138,7 +138,6 @@ const Profile = () => {
       </Section>
 
       <Section title="General">
-        <Row icon={CreditCard} label="Payment methods" />
         <Row icon={FileText} label="Terms & Conditions" />
         <Row icon={Shield} label="Privacy Policy" />
         <Row icon={UserIcon} label="About farmes" />
