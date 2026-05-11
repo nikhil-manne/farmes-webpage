@@ -16,6 +16,8 @@ import LaunchBanner from "./components/LaunchBanner";
 import Market from "./pages/Market";
 import HowItWorks from "./pages/HowItWorks";
 import AboutUs from "./pages/AboutUs";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -39,6 +41,9 @@ const App = () => (
             <Route path="/cart" element={<Cart />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Login signup />} />
             <Route path="*" element={<NotFound />} />

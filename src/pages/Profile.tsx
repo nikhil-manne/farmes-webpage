@@ -138,9 +138,9 @@ const Profile = () => {
       </Section>
 
       <Section title="General">
-        <Row icon={FileText} label="Terms & Conditions" />
-        <Row icon={Shield} label="Privacy Policy" />
-        <Row icon={UserIcon} label="About farmes" />
+        <Row icon={FileText} label="Terms & Conditions" onClick={() => navigate("/terms")} />
+        <Row icon={Shield} label="Privacy Policy" onClick={() => navigate("/privacy")} />
+        <Row icon={UserIcon} label="About farmes" onClick={() => navigate("/about")} />
       </Section>
 
       <div className="mx-5 mt-5 lg:mx-0">
@@ -190,8 +190,8 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </section>
 );
 
-const Row = ({ icon: Icon, label, hint }: { icon: typeof Phone; label: string; hint?: string }) => (
-  <button className="flex w-full items-center gap-3 border-b border-border px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-muted/40">
+const Row = ({ icon: Icon, label, hint, onClick }: { icon: typeof Phone; label: string; hint?: string; onClick?: () => void }) => (
+  <button onClick={onClick} className="flex w-full items-center gap-3 border-b border-border px-4 py-3.5 text-left transition-colors last:border-b-0 hover:bg-muted/40">
     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary-soft text-primary">
       <Icon className="h-4 w-4" />
     </div>
