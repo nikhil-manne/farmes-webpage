@@ -71,6 +71,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const add = useCart((s) => s.add);
+  const [quickAddProduct, setQuickAddProduct] = useState<UiProduct | null>(null);
+  const [selectedSize, setSelectedSize] = useState<number>(1.0);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true });
 
@@ -143,6 +145,25 @@ const Home = () => {
     });
     return Array.from(unique.values());
   }, [rawProducts]);
+
+  const formatSize = (kg: number) => (kg < 1 ? `${kg * 1000}g` : `${kg}kg`);
+
+  const handleQuickAdd = (product: UiProduct) => {
+    setQuickAddProduct(product);
+    if (product.allowedPackSizes?.length) {
+      const defaultSize = product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
+      setSelectedSize(defaultSize);
+    } else {
+      setSelectedSize(1.0);
+    }
+  };
+
+  const confirmQuickAdd = () => {
+    if (quickAddProduct) {
+      add(quickAddProduct.id, selectedSize);
+      setQuickAddProduct(null);
+    }
+  };
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -381,9 +402,6 @@ const Home = () => {
                   <Link to={`/product/${vegetable.id}`} className="block">
                     <div className="aspect-square overflow-hidden bg-muted relative">
                       <img src={vegetable.image} alt={vegetable.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                      <div className="absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm text-primary shadow-sm hover:bg-primary hover:text-white transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); e.stopPropagation(); add(vegetable.id); }}>
-                        <Plus className="h-5 w-5" />
-                      </div>
                     </div>
                   </Link>
                   <div className="p-6">
@@ -403,6 +421,13 @@ const Home = () => {
                          Fresh
                       </div>
                     </div>
+                    <button 
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleQuickAdd(vegetable); }}
+                      className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-95"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add to Basket
+                    </button>
                   </div>
                 </article>
               ))}
@@ -474,6 +499,51 @@ const Home = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Quick Add Modal */}
+      {quickAddProduct && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300" 
+            onClick={() => setQuickAddProduct(null)}
+          />
+          <div className="relative w-full max-w-sm rounded-3xl bg-card p-6 shadow-elevated border border-border animate-in zoom-in-95 duration-200">
+            <h3 className="font-display text-xl font-bold">Select Quantity</h3>
+            <p className="mt-1 text-sm text-muted-foreground">How much {quickAddProduct.name} would you like?</p>
+            
+            <div className="mt-6 flex flex-wrap gap-2">
+              {(quickAddProduct.allowedPackSizes || [1.0]).map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`rounded-xl border px-4 py-3 text-sm font-bold transition-all active:scale-95 ${
+                    selectedSize === size
+                      ? "border-primary bg-primary text-primary-foreground shadow-md"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/50"
+                  }`}
+                >
+                  {formatSize(size)}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-8 flex gap-3">
+              <button 
+                onClick={() => setQuickAddProduct(null)}
+                className="flex-1 rounded-xl border border-border py-3 text-sm font-bold text-muted-foreground transition-all hover:bg-muted"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmQuickAdd}
+                className="flex-[2] rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
+              >
+                Add Rs {Math.round(quickAddProduct.pricePerKg * selectedSize)}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
