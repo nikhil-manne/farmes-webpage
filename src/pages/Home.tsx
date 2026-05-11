@@ -23,7 +23,7 @@ import { useProcessModal } from "@/store/processModal";
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
 
 // Assets
-import heroHarvest from "@/assets/hero_harvest.png";
+import heroHarvest from "@/assets/farm_to_city_roadmap.png";
 import logisticsImg from "@/assets/logistics.png";
 import farmerSuccess from "@/assets/farmer_success.png";
 import farmHero from "@/assets/farm-1.jpg";
@@ -238,12 +238,12 @@ const Home = () => {
         </div>
         <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
           <div className="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] shadow-2xl animate-float">
-            <img src={heroHarvest} alt="Fresh Harvest" className="w-full h-full object-cover" />
+            <img src={heroHarvest} alt="Farm to City Roadmap" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 p-6 glass-card rounded-2xl border border-white/20 backdrop-blur-md bg-white/10 text-white">
-              <p className="text-sm font-bold uppercase tracking-widest mb-1 opacity-80">Today's Featured Farm</p>
-              <h3 className="text-2xl font-display font-bold">Green Valley Organics</h3>
-              <p className="text-sm opacity-90 mt-1">Harvested 4 hours ago in Medak District</p>
+              <p className="text-sm font-bold uppercase tracking-widest mb-1 opacity-80">Direct Connection</p>
+              <h3 className="text-2xl font-display font-bold">The 12-Hour Journey</h3>
+              <p className="text-sm opacity-90 mt-1">From farm soil to urban table, with zero storage.</p>
             </div>
           </div>
           {/* Decorative elements with glow drift */}
