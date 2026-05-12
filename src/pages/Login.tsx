@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
 
@@ -9,72 +9,10 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPrivileged, setIsPrivileged] = useState(false);
   
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = useMemo(() => params.get("next") || "/", [params]);
-
-  useEffect(() => {
-    // Check if user is potentially privileged to decide whether to show the widget
-    // This is just a UI hint, the backend does the real enforcement.
-    const trimmedPhone = phone.trim();
-    if (trimmedPhone.length >= 10) {
-      // We don't know for sure until we try sendOtp, but we can check if it's a known admin number
-      // Actually, it's better to just try sendOtp first.
-    }
-  }, [phone]);
-
-  const handleMsg91Success = async (data: any) => {
-    setLoading(true);
-    try {
-      await api.verifyOtp(phone.trim(), undefined, signup ? name.trim() : undefined, undefined, data);
-      navigate(next, { replace: true });
-    } catch (err: any) {
-      setError(err.message || "Login failed.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Initialize MSG91 configuration globally
-    (window as any).configuration = {
-      widgetId: "36656c684371303739313732",
-      tokenAuth: "515919AZVO5yE9fxq6a02e5abP1",
-      identifier: phone.trim(),
-      exposeMethods: true,
-      captchaRenderId: '',
-      success: (data: string) => {
-        handleMsg91Success(data);
-      },
-      failure: (error: any) => {
-        console.error('MSG91 Error:', error);
-        setError("OTP verification failed.");
-      },
-    };
-
-    // Load MSG91 Script
-    if (!document.getElementById('msg91-script')) {
-      const script = document.createElement('script');
-      script.id = 'msg91-script';
-      script.src = "https://verify.msg91.com/otp-provider.js";
-      script.async = true;
-      script.onload = () => {
-        if ((window as any).initSendOTP) {
-          (window as any).initSendOTP((window as any).configuration);
-        }
-      };
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  // Update identifier when phone changes
-  useEffect(() => {
-    if ((window as any).configuration) {
-      (window as any).configuration.identifier = phone.trim();
-    }
-  }, [phone]);
 
   const sendOtp = async () => {
     setError(null);
@@ -91,22 +29,12 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
 
     try {
       const res = await api.sendOtp(trimmedPhone);
-      
+      setOtpSent(true);
       if ((res as any).otp) {
-        // MOCK MODE (Admin/Farmer)
-        setIsPrivileged(true);
-        setOtpSent(true);
-        setOtp((res as any).otp);
-      } else {
-        // REAL MODE (Regular User) - Trigger MSG91 Widget
-        if ((window as any).showOTPWidget) {
-          (window as any).showOTPWidget();
-        } else {
-          setError("OTP Service is initializing. Please try again in a moment.");
-        }
+        setOtp((res as any).otp); // Auto-fill for mock mode (Admin/Farmer)
       }
     } catch (err: any) {
-      setError(err.message || "Could not process request.");
+      setError(err.message || "Could not send OTP.");
     } finally {
       setLoading(false);
     }
@@ -124,7 +52,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
       await api.verifyOtp(phone.trim(), otp.trim(), signup ? name.trim() : undefined);
       navigate(next, { replace: true });
     } catch (err: any) {
-      setError(err.message || "Verification failed.");
+      setError(err.message || "Verification failed. Please check the code.");
     } finally {
       setLoading(false);
     }
