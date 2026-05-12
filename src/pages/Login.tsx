@@ -1,8 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
-import { auth } from "@/lib/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
 const Login = ({ signup = false }: { signup?: boolean }) => {
   const [phone, setPhone] = useState("+91");
@@ -11,20 +9,71 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [isPrivileged, setIsPrivileged] = useState(false);
   
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = useMemo(() => params.get("next") || "/", [params]);
 
   useEffect(() => {
-    if (!(window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': () => {}
-      });
+    // Check if user is potentially privileged to decide whether to show the widget
+    // This is just a UI hint, the backend does the real enforcement.
+    const trimmedPhone = phone.trim();
+    if (trimmedPhone.length >= 10) {
+      // We don't know for sure until we try sendOtp, but we can check if it's a known admin number
+      // Actually, it's better to just try sendOtp first.
+    }
+  }, [phone]);
+
+  const handleMsg91Success = async (data: any) => {
+    setLoading(true);
+    try {
+      await api.verifyOtp(phone.trim(), undefined, signup ? name.trim() : undefined, undefined, data);
+      navigate(next, { replace: true });
+    } catch (err: any) {
+      setError(err.message || "Login failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Initialize MSG91 configuration globally
+    (window as any).configuration = {
+      widgetId: "36656c684371303739313732",
+      tokenAuth: "{token}",
+      identifier: phone.trim(),
+      exposeMethods: true,
+      success: (data: string) => {
+        handleMsg91Success(data);
+      },
+      failure: (error: any) => {
+        console.error('MSG91 Error:', error);
+        setError("OTP verification failed.");
+      },
+    };
+
+    // Load MSG91 Script
+    if (!document.getElementById('msg91-script')) {
+      const script = document.createElement('script');
+      script.id = 'msg91-script';
+      script.src = "https://verify.msg91.com/otp-provider.js";
+      script.async = true;
+      script.onload = () => {
+        if ((window as any).initSendOTP) {
+          (window as any).initSendOTP((window as any).configuration);
+        }
+      };
+      document.body.appendChild(script);
     }
   }, []);
+
+  // Update identifier when phone changes
+  useEffect(() => {
+    if ((window as any).configuration) {
+      (window as any).configuration.identifier = phone.trim();
+    }
+  }, [phone]);
 
   const sendOtp = async () => {
     setError(null);
@@ -40,23 +89,23 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
     setLoading(true);
 
     try {
-      // First, check if the backend wants us to use mock mode (for Admins/Farmers)
-      // This is a bit of a bypass: if the backend returns an 'otp' field, we use mock.
       const res = await api.sendOtp(trimmedPhone);
       
       if ((res as any).otp) {
         // MOCK MODE (Admin/Farmer)
+        setIsPrivileged(true);
         setOtpSent(true);
-        setOtp((res as any).otp); // Auto-fill for convenience if desired, or let them type 123456
+        setOtp((res as any).otp);
       } else {
-        // REAL MODE (Regular User) - Use Firebase
-        const verifier = (window as any).recaptchaVerifier;
-        const result = await signInWithPhoneNumber(auth, trimmedPhone, verifier);
-        setConfirmationResult(result);
-        setOtpSent(true);
+        // REAL MODE (Regular User) - Trigger MSG91 Widget
+        if ((window as any).showOTPWidget) {
+          (window as any).showOTPWidget();
+        } else {
+          setError("OTP Service is initializing. Please try again in a moment.");
+        }
       }
     } catch (err: any) {
-      setError(err.message || "Could not send OTP.");
+      setError(err.message || "Could not process request.");
     } finally {
       setLoading(false);
     }
@@ -71,20 +120,10 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
     setLoading(true);
     
     try {
-      if (confirmationResult) {
-        // Verify with Firebase
-        const result = await confirmationResult.confirm(otp.trim());
-        const idToken = await result.user.getIdToken();
-        
-        // Send idToken to backend
-        await api.verifyOtp(phone.trim(), undefined, signup ? name.trim() : undefined, idToken);
-      } else {
-        // Mock Mode verification
-        await api.verifyOtp(phone.trim(), otp.trim(), signup ? name.trim() : undefined);
-      }
+      await api.verifyOtp(phone.trim(), otp.trim(), signup ? name.trim() : undefined);
       navigate(next, { replace: true });
     } catch (err: any) {
-      setError(err.message || "Verification failed. Please check the code.");
+      setError(err.message || "Verification failed.");
     } finally {
       setLoading(false);
     }
@@ -92,7 +131,6 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
 
   return (
     <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-5 py-10">
-      <div id="recaptcha-container"></div>
       <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-card">
         <p className="text-center font-display text-3xl font-extrabold text-primary">farmes</p>
         <h1 className="mt-4 text-center font-display text-2xl font-bold">{signup ? "Create account" : "Login"}</h1>
