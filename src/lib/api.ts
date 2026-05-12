@@ -203,22 +203,25 @@ export const api = {
     }
     return Boolean(authToken);
   },
-  sendOtp: (phone: string) => request<{ message: string; otp?: string }>("/auth/send-otp", { method: "POST", body: JSON.stringify({ phone }) }),
-  verifyOtp: async (phone: string, otp?: string, name?: string, firebaseToken?: string, msg91Token?: string) => {
-    const verify = await request<{ accessToken: string; user: BackendUser }>("/auth/verify", {
+  register: async (phone: string, name: string, password: string) => {
+    const res = await request<{ accessToken: string; user: BackendUser }>("/auth/register", {
       method: "POST",
-      body: JSON.stringify({
-        phone,
-        otp,
-        firebaseToken,
-        msg91Token,
-        ...(name?.trim() ? { name: name.trim() } : {}),
-      }),
+      body: JSON.stringify({ phone, name, password }),
     });
-    authToken = verify.accessToken;
+    authToken = res.accessToken;
     sessionLoaded = true;
-    localStorage.setItem(AUTH_TOKEN_KEY, verify.accessToken);
-    return verify.user;
+    localStorage.setItem(AUTH_TOKEN_KEY, res.accessToken);
+    return res.user;
+  },
+  login: async (phone: string, password: string) => {
+    const res = await request<{ accessToken: string; user: BackendUser }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ phone, password }),
+    });
+    authToken = res.accessToken;
+    sessionLoaded = true;
+    localStorage.setItem(AUTH_TOKEN_KEY, res.accessToken);
+    return res.user;
   },
   listProducts: () => request<BackendProduct[]>("/products"),
   getSettings: () => request<BackendSettings>("/settings"),
