@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
+import { auth } from "@/lib/firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from "firebase/auth";
 
 const Login = ({ signup = false }: { signup?: boolean }) => {
   const [phone, setPhone] = useState("+91");
@@ -9,14 +11,26 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = useMemo(() => params.get("next") || "/", [params]);
 
-  const sendOtp = () => {
+  useEffect(() => {
+    if (!(window as any).recaptchaVerifier) {
+      (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': () => {}
+      });
+    }
+  }, []);
+
+  const sendOtp = async () => {
     setError(null);
-    if (!phone.startsWith("+") || phone.length < 8) {
-      setError("Enter a valid mobile number with country code.");
+    const trimmedPhone = phone.trim();
+    if (!trimmedPhone.startsWith("+") || trimmedPhone.length < 10) {
+      setError("Enter a valid mobile number with country code (e.g. +91XXXXXXXXXX).");
       return;
     }
     if (signup && name.trim().length < 2) {
@@ -24,29 +38,61 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
       return;
     }
     setLoading(true);
-    api
-      .sendOtp(phone.trim())
-      .then(() => setOtpSent(true))
-      .catch((err: Error) => setError(err.message || "Could not send OTP."))
-      .finally(() => setLoading(false));
+
+    try {
+      // First, check if the backend wants us to use mock mode (for Admins/Farmers)
+      // This is a bit of a bypass: if the backend returns an 'otp' field, we use mock.
+      const res = await api.sendOtp(trimmedPhone);
+      
+      if ((res as any).otp) {
+        // MOCK MODE (Admin/Farmer)
+        setOtpSent(true);
+        setOtp((res as any).otp); // Auto-fill for convenience if desired, or let them type 123456
+      } else {
+        // REAL MODE (Regular User) - Use Firebase
+        const verifier = (window as any).recaptchaVerifier;
+        const result = await signInWithPhoneNumber(auth, trimmedPhone, verifier);
+        setConfirmationResult(result);
+        setOtpSent(true);
+      }
+    } catch (err: any) {
+      setError(err.message || "Could not send OTP.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const verifyOtp = () => {
+  const verifyOtp = async () => {
     setError(null);
     if (otp.trim().length < 4) {
       setError("Enter a valid OTP.");
       return;
     }
     setLoading(true);
-    api
-      .verifyOtp(phone.trim(), otp.trim(), signup ? name.trim() : undefined)
-      .then(() => navigate(next, { replace: true }))
-      .catch((err: Error) => setError(err.message || "OTP verification failed."))
-      .finally(() => setLoading(false));
+    
+    try {
+      if (confirmationResult) {
+        // Verify with Firebase
+        const result = await confirmationResult.confirm(otp.trim());
+        const idToken = await result.user.getIdToken();
+        
+        // Send idToken to backend
+        await api.verifyOtp(phone.trim(), undefined, signup ? name.trim() : undefined, idToken);
+      } else {
+        // Mock Mode verification
+        await api.verifyOtp(phone.trim(), otp.trim(), signup ? name.trim() : undefined);
+      }
+      navigate(next, { replace: true });
+    } catch (err: any) {
+      setError(err.message || "Verification failed. Please check the code.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-5 py-10">
+      <div id="recaptcha-container"></div>
       <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-card">
         <p className="text-center font-display text-3xl font-extrabold text-primary">farmes</p>
         <h1 className="mt-4 text-center font-display text-2xl font-bold">{signup ? "Create account" : "Login"}</h1>

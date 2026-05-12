@@ -204,10 +204,15 @@ export const api = {
     return Boolean(authToken);
   },
   sendOtp: (phone: string) => request<{ message: string; otp?: string }>("/auth/send-otp", { method: "POST", body: JSON.stringify({ phone }) }),
-  verifyOtp: async (phone: string, otp: string, name?: string) => {
+  verifyOtp: async (phone: string, otp?: string, name?: string, firebaseToken?: string) => {
     const verify = await request<{ accessToken: string; user: BackendUser }>("/auth/verify", {
       method: "POST",
-      body: JSON.stringify({ phone, otp, ...(name?.trim() ? { name: name.trim() } : {}) }),
+      body: JSON.stringify({
+        phone,
+        otp,
+        firebaseToken,
+        ...(name?.trim() ? { name: name.trim() } : {}),
+      }),
     });
     authToken = verify.accessToken;
     sessionLoaded = true;
