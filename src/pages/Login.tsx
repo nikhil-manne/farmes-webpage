@@ -41,7 +41,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
     // Initialize MSG91 configuration globally
     (window as any).configuration = {
       widgetId: "36656c684371303739313732",
-      tokenAuth: "{token}",
+      tokenAuth: "515919AZVO5yE9fxq6a02e5abP1",
       identifier: phone.trim(),
       exposeMethods: true,
       success: (data: string) => {
