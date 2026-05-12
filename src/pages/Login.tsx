@@ -44,6 +44,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
       tokenAuth: "515919AZVO5yE9fxq6a02e5abP1",
       identifier: phone.trim(),
       exposeMethods: true,
+      captchaRenderId: '',
       success: (data: string) => {
         handleMsg91Success(data);
       },
