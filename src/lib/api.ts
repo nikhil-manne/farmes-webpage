@@ -223,16 +223,6 @@ export const api = {
     localStorage.setItem(AUTH_TOKEN_KEY, res.accessToken);
     return res.user;
   },
-  sendForgotPasswordOtp: (phone: string) =>
-    request<{ message: string }>("/auth/forgot-password/send", {
-      method: "POST",
-      body: JSON.stringify({ phone }),
-    }),
-  resetPassword: (payload: { phone: string; otp: string; newPassword: string }) =>
-    request<{ message: string }>("/auth/forgot-password/reset", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
   listProducts: () => request<BackendProduct[]>("/products"),
   getSettings: () => request<BackendSettings>("/settings"),
   getProduct: (id: string) => request<BackendProduct>(`/products/${id}`),
