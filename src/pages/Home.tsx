@@ -220,12 +220,12 @@ const Home = () => {
               Shop Fresh Harvest
               <ArrowRight className="h-5 w-5" />
             </Link>
-            <button 
-              onClick={openProcessModal}
+            <Link 
+              to="/farmers"
               className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
             >
-              See Our Process
-            </button>
+              Meet Our Farmers
+            </Link>
           </div>
           {/* Highlights with stagger */}
           <div ref={highlightsStagger} className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
