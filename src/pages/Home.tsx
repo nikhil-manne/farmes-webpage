@@ -32,7 +32,7 @@ import farmerPortrait from "@/assets/farmer-1.jpg";
 
 const highlights = [
   { label: "Delivery Days", value: "Tue & Fri" },
-  { label: "Order Cutoff", value: "Automated" },
+  { label: "Farmer's Share", value: "70-80%" },
   { label: "Storage Used", value: "Zero" },
 ];
 
@@ -289,6 +289,39 @@ const Home = () => {
                   </div>
                 </ScrollReveal>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Farmer Impact / Community Section */}
+      <section className="px-5 lg:px-0 py-20 bg-primary rounded-[3rem] text-primary-foreground relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mt-32 -mr-32 glow-drift" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -mb-32 -ml-32 glow-drift" style={{ animationDelay: '5s' }} />
+        
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold mb-6">
+            <Coins className="h-3.5 w-3.5 text-secondary" />
+            Direct Economic Impact
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl font-extrabold leading-tight">
+            Supporting Farmers, <br/> <span className="text-secondary italic">One Order at a Time.</span>
+          </h2>
+          <p className="mt-6 text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
+            By eliminating middlemen and cold storage costs, we forward <span className="text-white font-bold underline decoration-secondary decoration-2 underline-offset-4">70-80% of every Rupee</span> you pay directly to the farmers' bank accounts.
+          </p>
+          <div className="mt-10 grid md:grid-cols-3 gap-8 border-t border-white/10 pt-10">
+            <div>
+              <p className="text-4xl font-black text-secondary">70-80%</p>
+              <p className="mt-2 text-sm font-bold uppercase tracking-widest text-white/60">Farmer's Share</p>
+            </div>
+            <div>
+              <p className="text-4xl font-black text-secondary">24 Hrs</p>
+              <p className="mt-2 text-sm font-bold uppercase tracking-widest text-white/60">Settlement Time</p>
+            </div>
+            <div>
+              <p className="text-4xl font-black text-secondary">0%</p>
+              <p className="mt-2 text-sm font-bold uppercase tracking-widest text-white/60">Market Commission</p>
             </div>
           </div>
         </div>
