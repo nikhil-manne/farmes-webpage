@@ -262,6 +262,7 @@ export type UiProduct = {
   tags: string[];
   allowedPackSizes: number[];
   quantityPrices?: Record<string, number>;
+  defaultPackSize?: number | null;
 };
 
 export function getProductImage(productName: string) {
@@ -328,6 +329,7 @@ export function toUiProduct(product: BackendProduct): UiProduct {
     tags: ["Fresh", "Farm-direct"],
     allowedPackSizes: (product.allowedPackSizes || ["1.0"]).map(Number),
     quantityPrices: product.quantityPrices,
+    defaultPackSize: product.defaultPackSize ? Number(product.defaultPackSize) : null,
   };
 }
 

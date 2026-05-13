@@ -36,7 +36,9 @@ const Product = () => {
 
   useEffect(() => {
     if (product?.allowedPackSizes?.length) {
-      const defaultSize = product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
+      const defaultSize = product.defaultPackSize && product.allowedPackSizes.includes(product.defaultPackSize)
+        ? product.defaultPackSize
+        : product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
       setSelectedSize(defaultSize);
     }
   }, [product]);

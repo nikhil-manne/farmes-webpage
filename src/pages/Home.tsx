@@ -154,7 +154,9 @@ const Home = () => {
   const handleQuickAdd = (product: UiProduct) => {
     setQuickAddProduct(product);
     if (product.allowedPackSizes?.length) {
-      const defaultSize = product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
+      const defaultSize = product.defaultPackSize && product.allowedPackSizes.includes(product.defaultPackSize)
+        ? product.defaultPackSize
+        : product.allowedPackSizes.includes(1.0) ? 1.0 : product.allowedPackSizes[0];
       setSelectedSize(defaultSize);
     } else {
       setSelectedSize(1.0);
@@ -412,8 +414,8 @@ const Home = () => {
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <p className="font-display text-xl font-extrabold text-foreground">
-                        ₹{vegetable.pricePerKg}
-                        <span className="text-xs font-bold text-muted-foreground"> / {vegetable.unit}</span>
+                        ₹{vegetable.defaultPackSize ? (vegetable.quantityPrices?.[vegetable.defaultPackSize] ?? Math.round(vegetable.pricePerKg * vegetable.defaultPackSize)) : vegetable.pricePerKg}
+                        <span className="text-xs font-bold text-muted-foreground"> / {vegetable.defaultPackSize ? formatSize(vegetable.defaultPackSize) : vegetable.unit}</span>
                       </p>
                       <div className="flex items-center gap-1 text-[10px] font-black bg-secondary/20 text-secondary px-2 py-0.5 rounded-full uppercase">
                          <Award className="w-3 h-3" />
