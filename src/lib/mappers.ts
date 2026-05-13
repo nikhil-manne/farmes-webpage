@@ -155,7 +155,7 @@ const canonicalDisplayNames: Record<string, string> = {
   goruchikkudu: "Goru chikkudu",
 };
 
-function normalizeProductName(productName: string) {
+export function normalizeProductName(productName: string) {
   const normalized = productName.toLowerCase().trim();
   const flat = normalized.replace(/[^a-z0-9]/g, "");
   const key = nameAliases[normalized] ?? nameAliases[flat] ?? flat;
