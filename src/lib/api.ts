@@ -43,6 +43,7 @@ export type BackendProduct = {
     landAssignedAcres: number;
   }>;
   allowedPackSizes?: string[];
+  quantityPrices?: Record<string, number>;
 };
 
 export type BackendFarmer = {

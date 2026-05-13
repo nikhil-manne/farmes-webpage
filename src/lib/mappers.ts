@@ -261,6 +261,7 @@ export type UiProduct = {
   description: string;
   tags: string[];
   allowedPackSizes: number[];
+  quantityPrices?: Record<string, number>;
 };
 
 export function getProductImage(productName: string) {
@@ -326,6 +327,7 @@ export function toUiProduct(product: BackendProduct): UiProduct {
     description: `${normalized.label} sourced from ${product.farmer.villageOrAddress}.`,
     tags: ["Fresh", "Farm-direct"],
     allowedPackSizes: (product.allowedPackSizes || ["1.0"]).map(Number),
+    quantityPrices: product.quantityPrices,
   };
 }
 

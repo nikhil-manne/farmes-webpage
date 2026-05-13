@@ -83,7 +83,9 @@ const Product = () => {
           {product.name} {product.nameTe && <span className="text-xl font-medium text-muted-foreground ml-1">({product.nameTe})</span>}
         </h1>
         <div className="mt-1 flex items-end gap-2">
-          <p className="font-display text-2xl font-bold text-primary">Rs {Math.round(product.pricePerKg * selectedSize)}</p>
+          <p className="font-display text-2xl font-bold text-primary">
+            Rs {product.quantityPrices?.[selectedSize] ?? Math.round(product.pricePerKg * selectedSize)}
+          </p>
           <p className="pb-1 text-sm text-muted-foreground">for {formatSize(selectedSize)}</p>
         </div>
 
@@ -142,7 +144,7 @@ const Product = () => {
           className="flex w-full items-center justify-center gap-3 rounded-xl bg-primary py-4 font-display text-base font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
         >
           <ShoppingBag className="h-5 w-5" />
-          Add to basket — Rs {Math.round(product.pricePerKg * selectedSize)}
+          Add to basket — Rs {product.quantityPrices?.[selectedSize] ?? Math.round(product.pricePerKg * selectedSize)}
         </button>
       </div>
       <div className="h-32" />

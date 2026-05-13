@@ -50,7 +50,7 @@ const Cart = () => {
     })
     .filter(Boolean) as (UiProduct & { qty: number })[];
 
-  const subtotal = detailed.reduce((sum, item) => sum + item.pricePerKg * item.qty, 0);
+  const subtotal = detailed.reduce((sum, item) => sum + (item.quantityPrices?.[item.qty] ?? item.pricePerKg * item.qty), 0);
   const delivery = subtotal > 0 ? deliveryPrice : 0;
   const packaging = subtotal > 0 ? packagingFee : 0;
   const platform = subtotal > 0 ? platformFee : 0;
@@ -176,7 +176,7 @@ const Cart = () => {
               <h4 className="truncate font-display text-sm font-semibold">{item.name} {item.nameTe && <span className="text-[10px] font-normal text-muted-foreground ml-1">({item.nameTe})</span>}</h4>
               <p className="truncate text-[11px] text-muted-foreground">by {item.farmerName}</p>
               <p className="mt-1 font-display text-sm font-bold">
-                Rs {Math.round(item.pricePerKg * item.qty)}
+                Rs {Math.round(item.quantityPrices?.[item.qty] ?? item.pricePerKg * item.qty)}
                 <span className="ml-1 text-[10px] font-medium text-muted-foreground">(Rs {item.pricePerKg}/kg)</span>
               </p>
             </div>

@@ -256,7 +256,7 @@ const Market = () => {
                 onClick={confirmQuickAdd}
                 className="flex-[2] rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90"
               >
-                Add Rs {Math.round(quickAddProduct.pricePerKg * selectedSize)}
+                Add Rs {quickAddProduct.quantityPrices?.[selectedSize] ?? Math.round(quickAddProduct.pricePerKg * selectedSize)}
               </button>
             </div>
           </div>
