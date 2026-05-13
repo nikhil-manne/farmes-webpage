@@ -77,16 +77,6 @@ const AboutUs = () => {
             <div className="relative rounded-[3rem] overflow-hidden shadow-2xl animate-float max-w-4xl mx-auto">
               <img src={visionImage} alt="Farmes Vision" className="w-full h-auto" />
             </div>
-            {/* Floating Badges */}
-            <div className="absolute -top-6 -right-6 hidden lg:flex bg-white p-4 rounded-2xl shadow-xl items-center gap-3 border border-border animate-in zoom-in duration-700 delay-500">
-               <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                  <Star className="h-5 w-5 fill-current" />
-               </div>
-               <div className="text-left">
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Trust Rating</p>
-                  <p className="font-display font-bold">4.9/5 Stars</p>
-               </div>
-            </div>
           </div>
         </div>
       </section>
