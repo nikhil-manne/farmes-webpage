@@ -228,7 +228,7 @@ const Home = () => {
             </Link>
           </div>
           {/* Highlights with stagger */}
-          <div ref={highlightsStagger} className="mt-12 grid grid-cols-3 gap-8 border-t border-border pt-8">
+          <div ref={highlightsStagger} className="mt-12 grid grid-cols-3 gap-x-10 gap-y-8 md:gap-8 border-t border-border pt-8">
             {highlights.map((item) => (
               <div key={item.label} data-reveal>
                 <dt className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{item.label}</dt>
