@@ -203,10 +203,10 @@ export const api = {
     }
     return Boolean(authToken);
   },
-  register: async (phone: string, name: string, password: string) => {
+  register: async (phone: string, name: string, password: string, address: string) => {
     const res = await request<{ accessToken: string; user: BackendUser }>("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ phone, name, password }),
+      body: JSON.stringify({ phone, name, password, address }),
     });
     authToken = res.accessToken;
     sessionLoaded = true;

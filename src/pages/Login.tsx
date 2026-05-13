@@ -7,6 +7,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const [view, setView] = useState<"auth" | "forgot">("auth");
   const [phone, setPhone] = useState("+91");
   const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +31,9 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
     try {
       if (signup) {
         if (name.trim().length < 2) throw new Error("Name must be at least 2 characters.");
+        if (address.trim().length < 5) throw new Error("Please enter a valid delivery address.");
         if (password.length < 6) throw new Error("Password must be at least 6 characters.");
-        await api.register(trimmedPhone, name.trim(), password);
+        await api.register(trimmedPhone, name.trim(), password, address.trim());
       } else {
         await api.login(trimmedPhone, password);
       }
@@ -69,6 +71,11 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Full Name</label>
                   <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Delivery Address</label>
+                  <input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no, Street, Area" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
                 </div>
               )}
               
