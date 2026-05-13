@@ -65,6 +65,8 @@ const nameAliases: Record<string, string> = {
   "ivy gourd": "ivygourd",
   "yellow cucumber": "dosakaya",
   "cluster beans": "goruchikkudu",
+  "goru chikkudu": "goruchikkudu",
+  "lady finger": "ladyfinger",
   "sorrel leaves": "gongura",
   "fenugreek leaves": "menthikura",
   drumstick: "mulakkaya",

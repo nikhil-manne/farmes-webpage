@@ -5,7 +5,7 @@ import farmCover from "@/assets/farm-1.jpg";
 import farmerPortrait from "@/assets/farmer-1.jpg";
 import { api, BackendFarmer } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
-import { getProductImage } from "@/lib/mappers";
+import { getProductImage, normalizeProductName } from "@/lib/mappers";
 
 type MediaItem = { id: string; type: "IMAGE" | "VIDEO"; url: string };
 type FarmerProductCard = { id: string; name: string; image: string; pricePerKg: number };
@@ -78,12 +78,15 @@ const FarmerProfile = () => {
 
   const products = useMemo<FarmerProductCard[]>(
     () =>
-      (farmer?.products || []).map((product) => ({
-        id: product.id,
-        name: product.name,
-        image: getProductImage(product.name),
-        pricePerKg: Number(product.pricePerKg),
-      })),
+      (farmer?.products || []).map((product) => {
+        const normalized = normalizeProductName(product.name);
+        return {
+          id: product.id,
+          name: normalized.label,
+          image: getProductImage(normalized.key),
+          pricePerKg: Number(product.pricePerKg),
+        };
+      }),
     [farmer],
   );
   const resolvedUrl = (item: MediaItem) => signedUrlByMediaId[item.id] || (isAbsoluteUrl(item.url) ? item.url : "");
