@@ -191,7 +191,7 @@ const Market = () => {
                 <div className="p-6">
                   <div className="min-w-0">
                     <Link to={`/product/${vegetable.id}`} className="font-display text-lg font-bold leading-tight hover:text-primary transition-colors">
-                      {vegetable.name}
+                      {vegetable.name} {vegetable.nameTe && <span className="text-xs font-medium text-muted-foreground block md:inline md:ml-1">({vegetable.nameTe})</span>}
                     </Link>
                     <p className="mt-1 truncate text-xs font-bold text-muted-foreground uppercase tracking-widest">by {vegetable.farmerName}</p>
                   </div>

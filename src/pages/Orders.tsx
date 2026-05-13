@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Check, Home as HomeIcon, Package as PackageIcon, Sprout, Truck } from "lucide-react";
 import { api } from "@/lib/api";
-import { toOrderUiStatus } from "@/lib/mappers";
+import { toOrderUiStatus, normalizeProductName } from "@/lib/mappers";
 import { Loader } from "@/components/ui/loader";
 
 type Status = "ordered" | "harvesting" | "packed" | "delivery" | "delivered";
@@ -49,12 +49,16 @@ const Orders = () => {
             date: new Date(order.createdAt).toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short" }),
             total: Number(order.totalAmount),
             status: toOrderUiStatus(order.status),
-            items: order.items.map((item) => ({
-              id: item.id,
-              name: item.product?.name || "Product",
-              quantity: Number(item.quantity || 0),
-              price: Number(item.price || item.product?.pricePerKg || 0),
-            })),
+            items: order.items.map((item) => {
+              const normalized = normalizeProductName(item.product?.name || "Product");
+              return {
+                id: item.id,
+                name: normalized.label,
+                nameTe: normalized.labelTe,
+                quantity: Number(item.quantity || 0),
+                price: Number(item.price || item.product?.pricePerKg || 0),
+              };
+            }),
           })),
         ),
       )
@@ -110,7 +114,9 @@ const Orders = () => {
                 <ul className="space-y-1.5">
                   {order.items.map((item) => (
                     <li key={item.id} className="flex justify-between text-xs">
-                      <span>{item.name} x {item.quantity} kg</span>
+                      <span>
+                        {item.name} {item.nameTe && <span className="text-[10px] opacity-60 ml-0.5">({item.nameTe})</span>} x {item.quantity} kg
+                      </span>
                       <span className="font-medium">Rs {item.price * item.quantity}</span>
                     </li>
                   ))}

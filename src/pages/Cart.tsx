@@ -173,7 +173,7 @@ const Cart = () => {
               <img src={item.image} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
-              <h4 className="truncate font-display text-sm font-semibold">{item.name}</h4>
+              <h4 className="truncate font-display text-sm font-semibold">{item.name} {item.nameTe && <span className="text-[10px] font-normal text-muted-foreground ml-1">({item.nameTe})</span>}</h4>
               <p className="truncate text-[11px] text-muted-foreground">by {item.farmerName}</p>
               <p className="mt-1 font-display text-sm font-bold">
                 Rs {Math.round(item.pricePerKg * item.qty)}

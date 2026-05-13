@@ -25,6 +25,14 @@ import beerakaya from "@/assets/products/beerakaya.png";
 import banana from "@/assets/products/banana.png";
 import bachalakura from "@/assets/products/bachalakura.png";
 import apple from "@/assets/products/apple.png";
+import beans from "@/assets/products/beans.png";
+import beetroot from "@/assets/products/beetroot.png";
+import capsicum from "@/assets/products/capsicum.png";
+import cauliflower from "@/assets/products/cauliflower.png";
+import lemon from "@/assets/products/lemon.png";
+import karivepaku from "@/assets/products/karivepaku.png";
+import kothmir from "@/assets/products/kothmir.png";
+import pudhina from "@/assets/products/pudhina.png";
 import type { BackendOrderStatus, BackendProduct } from "@/lib/api";
 
 const productImages: Record<string, string> = {
@@ -55,6 +63,14 @@ const productImages: Record<string, string> = {
   sorakaya,
   palakura,
   menthikura,
+  beans,
+  beetroot,
+  capsicum,
+  cauliflower,
+  lemon,
+  karivepaku,
+  kothmir,
+  pudhina,
 };
 
 const nameAliases: Record<string, string> = {
@@ -101,6 +117,15 @@ const nameAliases: Record<string, string> = {
   "మునగకాయ": "mulakkaya",
   "గోరు చిక్కుడు": "goruchikkudu",
   "చిలగడ దుంప": "sweetpotato",
+  "బీన్స్": "beans",
+  "బీట్‌రూట్": "beetroot",
+  "క్యాప్సికం": "capsicum",
+  "కాలీఫ్లవర్": "cauliflower",
+  "నిమ్మకాయ": "lemon",
+  "కరివేపాకు": "karivepaku",
+  "కొత్తిమీర": "kothmir",
+  "పుదీనా": "pudhina",
+  "టమాట": "tomato",
   "टमाटर": "tomato",
   "प्याज़": "onion",
   "आलू": "potato",
@@ -123,6 +148,15 @@ const nameAliases: Record<string, string> = {
   "सहजन": "mulakkaya",
   "गवार": "goruchikkudu",
   "शकरकंद": "sweetpotato",
+  "बीन्स": "beans",
+  "चुकंदर": "beetroot",
+  "शिमला मिर्च": "capsicum",
+  "capcicum": "capsicum",
+  "फूलगोभी": "cauliflower",
+  "नींबू": "lemon",
+  "करी पत्ता": "karivepaku",
+  "धनिया": "kothmir",
+  "पुदीना": "pudhina",
 };
 
 const canonicalDisplayNames: Record<string, string> = {
@@ -153,6 +187,52 @@ const canonicalDisplayNames: Record<string, string> = {
   kakarakaya: "Kakarakaya",
   mulakkaya: "Mulakkaya",
   goruchikkudu: "Goru chikkudu",
+  beans: "Beans",
+  beetroot: "Beetroot",
+  capsicum: "Capsicum",
+  cauliflower: "Cauliflower",
+  lemon: "Lemon",
+  karivepaku: "Karivepaku",
+  kothmir: "Kothmir",
+  pudhina: "Pudhina",
+};
+
+const teluguDisplayNames: Record<string, string> = {
+  tomato: "టమోటా",
+  onion: "ఉల్లిపాయ",
+  potato: "బంగాళదుంప",
+  sweetpotato: "చిలగడ దుంప",
+  spinach: "పాలకూర",
+  carrot: "క్యారెట్",
+  chili: "పచ్చి మిర్చి",
+  apple: "ఆపిల్",
+  banana: "అరటి",
+  mango: "మామిడి",
+  grapes: "ద్రాక్ష",
+  brinjal: "వంకాయ",
+  ladyfinger: "బెండకాయ",
+  ivygourd: "దొండకాయ",
+  gongura: "గోంగూర",
+  thotakura: "తోటకూర",
+  palakura: "పాలకూర",
+  menthikura: "మెంతికూర",
+  chukkakura: "చుక్కకూర",
+  bachalakura: "బచ్చలకూర",
+  dosakaya: "దోసకాయ",
+  beerakaya: "బీరకాయ",
+  sorakaya: "సొరకాయ",
+  potlakaya: "పొట్లకాయ",
+  kakarakaya: "కాకరకాయ",
+  mulakkaya: "మునగకాయ",
+  goruchikkudu: "గోరు చిక్కుడు",
+  beans: "బీన్స్",
+  beetroot: "బీట్‌రూట్",
+  capsicum: "క్యాప్సికం",
+  cauliflower: "కాలీఫ్లవర్",
+  lemon: "నిమ్మకాయ",
+  karivepaku: "కరివేపాకు",
+  kothmir: "కొత్తిమీర",
+  pudhina: "పుదీనా",
 };
 
 export function normalizeProductName(productName: string) {
@@ -163,12 +243,14 @@ export function normalizeProductName(productName: string) {
   return {
     key,
     label: canonicalDisplayNames[key] ?? productName,
+    labelTe: teluguDisplayNames[key],
   };
 }
 
 export type UiProduct = {
   id: string;
   name: string;
+  nameTe?: string;
   image: string;
   pricePerKg: number;
   unit: string;
@@ -218,11 +300,13 @@ export function getProductCategory(productName: string) {
   const fruiting = ["tomato", "brinjal", "chili", "ladyfinger", "banana", "apple", "mango", "grapes"];
   const cruciferous = ["cabbage", "cauliflower", "broccoli", "cruciferous"];
   const gourds = ["sorakaya", "beerakaya", "dosakaya", "potlakaya", "kakarakaya", "ivygourd", "gourd", "cucumber"];
+  const condiments = ["lemon", "chili", "ginger", "garlic", "karivepaku", "kothmir", "pudhina", "coriander", "mint", "curry"];
   if (leafy.some((term) => normalized.includes(term))) return "Leafy";
   if (roots.some((term) => normalized.includes(term))) return "Roots";
   if (fruiting.some((term) => normalized.includes(term))) return "Fruiting";
   if (cruciferous.some((term) => normalized.includes(term))) return "Cruciferous";
   if (gourds.some((term) => normalized.includes(term))) return "Gourds";
+  if (condiments.some((term) => normalized.includes(term))) return "Condiments";
   return "Fruiting";
 }
 
@@ -231,6 +315,7 @@ export function toUiProduct(product: BackendProduct): UiProduct {
   return {
     id: product.id,
     name: normalized.label,
+    nameTe: normalized.labelTe,
     image: getProductImage(normalized.key),
     pricePerKg: Number(product.pricePerKg),
     unit: "kg",
@@ -252,4 +337,4 @@ export function toOrderUiStatus(status: BackendOrderStatus): "ordered" | "harves
   return "ordered";
 }
 
-export const categories = ["All", "Leafy", "Roots", "Fruiting", "Cruciferous", "Gourds"];
+export const categories = ["All", "Leafy", "Roots", "Fruiting", "Cruciferous", "Gourds", "Condiments"];

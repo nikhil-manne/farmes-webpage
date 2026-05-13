@@ -79,7 +79,9 @@ const Product = () => {
           ))}
         </div>
 
-        <h1 className="mt-3 font-display text-3xl font-bold leading-tight">{product.name}</h1>
+        <h1 className="mt-3 font-display text-3xl font-bold leading-tight">
+          {product.name} {product.nameTe && <span className="text-xl font-medium text-muted-foreground ml-1">({product.nameTe})</span>}
+        </h1>
         <div className="mt-1 flex items-end gap-2">
           <p className="font-display text-2xl font-bold text-primary">Rs {Math.round(product.pricePerKg * selectedSize)}</p>
           <p className="pb-1 text-sm text-muted-foreground">for {formatSize(selectedSize)}</p>
