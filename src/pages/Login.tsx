@@ -68,15 +68,17 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
           {view === "auth" ? (
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               {signup && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Full Name</label>
-                  <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
-                </div>
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Full Name</label>
+                    <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
+                  </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Delivery Address</label>
-                  <input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no, Street, Area" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
-                </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Delivery Address</label>
+                    <input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no, Street, Area" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
+                  </div>
+                </>
               )}
               
               <div className="space-y-1.5">
