@@ -16,19 +16,7 @@ import sustainabilityImage from "@/assets/sustainability.png";
 const AboutUs = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
-  const stats = [
-    { label: "Empowered Farmers", value: "500+", description: "Partnered directly through our platform" },
-    { label: "Communities Served", value: "25+", description: "Direct deliveries to residential hubs" },
-    { label: "Wastage Reduced", value: "85%", description: "Compared to traditional supply chains" },
-    { label: "Delivery Precision", value: "99.8%", description: "Successful 12-hour fulfillment rate" }
-  ];
 
-  const timeline = [
-    { year: "2024", title: "The Seed", description: "Farmes was founded with a single mission: to prove that a warehouse-free agricultural supply chain is possible." },
-    { year: "2025", title: "Direct Connect", description: "Launched our first digital platform for farmers, enabling real-time demand-based harvesting." },
-    { year: "2026", title: "Smart Logistics", description: "Scaled to 25+ communities with an optimized door-to-door delivery network." },
-    { year: "Future", title: "Nationwide Growth", description: "Building the infrastructure for a fair, efficient, and sustainable food ecosystem across the country." }
-  ];
 
   const values = [
     {
@@ -178,32 +166,6 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Timeline Journey */}
-      <section className="px-5 py-24 bg-background overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-           <h2 className="font-display text-3xl font-bold mb-16 text-center">Our Journey So Far</h2>
-           <div className="relative">
-              <div className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-0.5 bg-border hidden md:block" />
-              <div className="space-y-12 relative z-10">
-                 {timeline.map((item, i) => (
-                   <div key={i} className={cn("flex flex-col md:flex-row items-center gap-8", i % 2 === 0 ? "md:flex-row-reverse" : "")}>
-                      <div className="md:w-1/2 flex justify-center md:justify-start lg:px-12">
-                         <div className={cn("p-8 rounded-3xl border border-border bg-card shadow-soft max-w-sm", i % 2 === 0 ? "md:text-left" : "md:text-right")}>
-                            <span className="text-primary font-black text-xl mb-2 block">{item.year}</span>
-                            <h4 className="font-display text-xl font-bold mb-3">{item.title}</h4>
-                            <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-                         </div>
-                      </div>
-                      <div className="h-12 w-12 rounded-full bg-primary border-4 border-background shadow-lg flex items-center justify-center text-white text-xs font-bold shrink-0 z-20">
-                         {i+1}
-                      </div>
-                      <div className="md:w-1/2 hidden md:block" />
-                   </div>
-                 ))}
-              </div>
-           </div>
-        </div>
-      </section>
 
       {/* Sustainability Section */}
       <section className="px-5 py-24 bg-primary text-white relative overflow-hidden">
@@ -238,18 +200,6 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="px-5 py-20 bg-background">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, i) => (
-            <div key={i} className="text-center p-6 rounded-3xl bg-card border border-border shadow-soft transition-transform hover:-translate-y-1">
-              <p className="font-display text-3xl md:text-4xl font-black text-primary">{stat.value}</p>
-              <p className="mt-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">{stat.label}</p>
-              <p className="text-[10px] text-muted-foreground mt-1 px-4">{stat.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* FAQ & Final CTA */}
       <section className="px-5 py-24 bg-white">
