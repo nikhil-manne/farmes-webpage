@@ -67,6 +67,7 @@ const nameAliases: Record<string, string> = {
   "cluster beans": "goruchikkudu",
   "goru chikkudu": "goruchikkudu",
   "lady finger": "ladyfinger",
+  "lady's finger": "ladyfinger",
   "sorrel leaves": "gongura",
   "fenugreek leaves": "menthikura",
   drumstick: "mulakkaya",
@@ -156,7 +157,9 @@ const canonicalDisplayNames: Record<string, string> = {
 
 function normalizeProductName(productName: string) {
   const normalized = productName.toLowerCase().trim();
-  const key = nameAliases[normalized] ?? normalized.replace(/\s+/g, "");
+  const flat = normalized.replace(/[^a-z0-9]/g, "");
+  const key = nameAliases[normalized] ?? nameAliases[flat] ?? flat;
+  
   return {
     key,
     label: canonicalDisplayNames[key] ?? productName,
@@ -179,15 +182,32 @@ export type UiProduct = {
 };
 
 export function getProductImage(productName: string) {
-  const normalized = productName.toLowerCase().trim();
-  if (productImages[normalized]) return productImages[normalized];
-  if (nameAliases[normalized] && productImages[nameAliases[normalized]]) return productImages[nameAliases[normalized]];
+  if (!productName) return tomato;
+  
+  const raw = productName.toLowerCase().trim();
+  const flat = raw.replace(/[^a-z0-9]/g, "");
+  
+  // 1. Direct match with raw name
+  if (productImages[raw]) return productImages[raw];
+  
+  // 2. Direct match with flat name
+  if (productImages[flat]) return productImages[flat];
+  
+  // 3. Match via aliases
+  const aliasKey = nameAliases[raw] || nameAliases[flat];
+  if (aliasKey && productImages[aliasKey]) return productImages[aliasKey];
+
+  // 4. Fuzzy match
   for (const key of Object.keys(productImages)) {
-    if (normalized.includes(key) || key.includes(normalized)) return productImages[key];
+    if (flat.includes(key) || key.includes(flat)) return productImages[key];
   }
+
+  // 6. Fuzzy match via aliases
   for (const [alias, key] of Object.entries(nameAliases)) {
-    if (normalized.includes(alias) || alias.includes(normalized)) return productImages[key];
+    const flatAlias = alias.replace(/\s+/g, "");
+    if (flat.includes(flatAlias) || flatAlias.includes(flat)) return productImages[key];
   }
+
   return tomato;
 }
 
