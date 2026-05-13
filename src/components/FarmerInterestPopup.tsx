@@ -9,12 +9,31 @@ export const FarmerInterestPopup = () => {
 
   useEffect(() => {
     const hasResponded = localStorage.getItem('farmer_interest_responded');
-    if (!hasResponded) {
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 5000); // Show after 5 seconds to not overwhelm immediately
-      return () => clearTimeout(timer);
-    }
+    if (hasResponded) return;
+
+    let timer: NodeJS.Timeout;
+    let hasScrolled = false;
+
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        hasScrolled = true;
+        checkAndShow();
+      }
+    };
+
+    const checkAndShow = () => {
+      if (hasScrolled) {
+        timer = setTimeout(() => {
+          setIsVisible(true);
+        }, 15000); // 15s delay AFTER scrolling
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleResponse = async (interested: boolean) => {
