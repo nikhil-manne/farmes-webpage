@@ -252,6 +252,8 @@ export const api = {
   getMe: () => request<BackendUser>("/users/me", undefined, true),
   updateMe: (payload: { name?: string; address?: string }) =>
     request<BackendUser>("/users/me", { method: "PATCH", body: JSON.stringify(payload) }, true),
+  recordInterest: (interested: boolean) =>
+    request("/interest", { method: "POST", body: JSON.stringify({ interested }) }),
   resetSession: () => {
     authToken = null;
     sessionLoaded = true;
