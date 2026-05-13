@@ -80,6 +80,9 @@ const Market = () => {
           title="The Fresh Market"
           description="Browse our complete collection of farm-fresh produce, harvested specifically for your order."
         />
+        <p className="text-xs font-semibold text-muted-foreground italic -mt-2 opacity-80">
+          * These are estimated prices only. Original prices will be calculated after launch.
+        </p>
 
         <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">

@@ -370,6 +370,9 @@ const Home = () => {
                 title="Fresh Today"
                 description="Explore the best seasonal produce harvested just hours ago."
               />
+              <p className="mt-4 text-xs font-semibold text-muted-foreground italic opacity-80">
+                * These are estimated prices only. Original prices will be calculated after launch.
+              </p>
             </div>
             <div className="flex items-center gap-4">
                <button onClick={scrollPrev} className="h-12 w-12 flex items-center justify-center rounded-full border border-border bg-card text-foreground hover:border-primary hover:text-primary transition-all shadow-soft">
