@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Rocket, X, MousePointer2 } from 'lucide-react';
+import { Calendar, Rocket, X, MousePointer2, Heart } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { useInterestStore } from '@/store/interestStore';
 
@@ -42,11 +42,19 @@ const LaunchBanner = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+             {/* Desktop Interest Cue */}
              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg border border-white/10 group-hover:bg-white/20 transition-colors">
                 <MousePointer2 className="w-3.5 h-3.5 text-secondary animate-pulse" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">Click to show interest</span>
              </div>
+             
+             {/* Mobile/Tablet Interest Cue */}
+             <div className="flex lg:hidden items-center gap-1.5 px-2.5 py-1 bg-secondary text-primary rounded-lg shadow-sm animate-pulse">
+                <Heart className="w-3 h-3 fill-current" />
+                <span className="text-[9px] font-black uppercase tracking-tight">Interested?</span>
+             </div>
+
              <div className="hidden md:flex lg:hidden items-center gap-2 px-3 py-1 bg-white/10 rounded-lg border border-white/10">
                 <Calendar className="w-3.5 h-3.5 text-secondary" />
                 <span className="text-[10px] font-bold uppercase tracking-wider">Save the date</span>
@@ -59,6 +67,7 @@ const LaunchBanner = () => {
               <X className="w-5 h-5" />
             </button>
           </div>
+
         </div>
       </div>
 
