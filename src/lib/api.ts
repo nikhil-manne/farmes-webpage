@@ -224,6 +224,12 @@ export const api = {
     localStorage.setItem(AUTH_TOKEN_KEY, res.accessToken);
     return res.user;
   },
+  resetPassword: async (phone: string, password: string, firebaseToken?: string) => {
+    return await request("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ phone, password, firebaseToken }),
+    });
+  },
   listProducts: () => request<BackendProduct[]>("/products"),
   getSettings: () => request<BackendSettings>("/settings"),
   getProduct: (id: string) => request<BackendProduct>(`/products/${id}`),
