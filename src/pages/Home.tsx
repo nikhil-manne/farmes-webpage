@@ -19,7 +19,7 @@ import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { useProcessModal } from "@/store/processModal";
 import { useInterestStore } from "@/store/interestStore";
-import { RoadmapHero } from "@/components/home/RoadmapHero";
+import { HeroGallery } from "@/components/home/HeroGallery";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -280,7 +280,7 @@ const Home = () => {
           </div>
         </div>
         <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-          <RoadmapHero />
+          <HeroGallery videos={galleryVideos} onPlayVideo={setActivePreviewVideo} />
           
           {/* Decorative elements with glow drift */}
           <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl glow-drift" />
