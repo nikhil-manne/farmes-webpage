@@ -284,7 +284,7 @@ const Home = () => {
         </div>
         <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
           <Link to="/gallery" className="block">
-            <div className="group relative w-full aspect-[4/3] md:aspect-video lg:aspect-[16/9] bg-black rounded-[2.5rem] overflow-hidden border border-border shadow-2xl cursor-pointer">
+            <div className="group relative w-full max-w-[680px] mx-auto lg:ml-auto aspect-square bg-black rounded-[2.5rem] overflow-hidden border border-border shadow-2xl cursor-pointer">
               {localGalleryImages.length > 0 ? (
                 <img
                   src={localGalleryImages[activeGalleryImageIndex]?.url}
