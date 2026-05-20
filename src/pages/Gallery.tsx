@@ -55,7 +55,7 @@ const Gallery = () => {
       onClick={() => setSelectedItem(item)}
       className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-border bg-card shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1"
     >
-      <div className="aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+      <div className="aspect-square bg-black relative flex items-center justify-center overflow-hidden">
         {item.type === "VIDEO" ? (
           <video
             src={item.url}
