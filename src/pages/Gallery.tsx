@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Play, X, Calendar, Film, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Play, X, Calendar, Film } from "lucide-react";
 // import { api } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
 import { LocalGalleryItem, localGalleryImages, localGalleryItems, localGalleryVideos } from "@/lib/localGallery";
@@ -79,15 +79,13 @@ const Gallery = () => {
           />
         )}
 
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity duration-300 group-hover:bg-black/20">
-          <div className="w-14 h-14 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-            {item.type === "VIDEO" ? (
+        {item.type === "VIDEO" && (
+          <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity duration-300 group-hover:bg-black/20">
+            <div className="w-14 h-14 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
               <Play className="w-6 h-6 fill-current translate-x-0.5" />
-            ) : (
-              <ImageIcon className="w-6 h-6" />
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="p-6">
