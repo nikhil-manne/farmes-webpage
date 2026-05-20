@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Play, X, Calendar, Film, Image as ImageIcon } from "lucide-react";
 // import { api } from "@/lib/api";
@@ -10,6 +10,7 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<LocalGalleryItem | null>(null);
+  const [activeSection, setActiveSection] = useState<"IMAGES" | "VIDEOS">("IMAGES");
 
   useEffect(() => {
     setLoading(true);
@@ -42,6 +43,11 @@ const Gallery = () => {
     //     setLoading(false);
     //   });
   }, []);
+
+  const visibleItems = useMemo(
+    () => (activeSection === "IMAGES" ? localGalleryImages : localGalleryVideos),
+    [activeSection],
+  );
 
   const renderCard = (item: LocalGalleryItem) => (
     <article
@@ -85,10 +91,7 @@ const Gallery = () => {
       </div>
 
       <div className="p-6">
-        <h3 className="font-display text-lg font-bold leading-tight group-hover:text-primary transition-colors">
-          {item.title}
-        </h3>
-        <div className="mt-3 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <Calendar className="w-3.5 h-3.5" />
           <span>
             {new Date(item.createdAt).toLocaleDateString(undefined, {
@@ -121,9 +124,6 @@ const Gallery = () => {
           <h1 className="font-display text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
             Our <span className="text-primary">Gallery</span>
           </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            Temporary local gallery mode is active. Add media files in <code>src/gallery</code> to display them here.
-          </p>
         </div>
 
         {loading && (
@@ -148,20 +148,35 @@ const Gallery = () => {
         )}
 
         {!loading && !error && items.length > 0 && (
-          <div className="space-y-14">
-            <section>
-              <h2 className="font-display text-2xl md:text-3xl font-bold mb-6">Images ({localGalleryImages.length})</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {localGalleryImages.map(renderCard)}
-              </div>
-            </section>
+          <div className="space-y-8">
+            <div className="inline-flex items-center rounded-xl border border-border bg-card p-1">
+              <button
+                onClick={() => setActiveSection("IMAGES")}
+                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
+                  activeSection === "IMAGES" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Images ({localGalleryImages.length})
+              </button>
+              <button
+                onClick={() => setActiveSection("VIDEOS")}
+                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
+                  activeSection === "VIDEOS" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Videos ({localGalleryVideos.length})
+              </button>
+            </div>
 
-            <section>
-              <h2 className="font-display text-2xl md:text-3xl font-bold mb-6">Videos ({localGalleryVideos.length})</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {localGalleryVideos.map(renderCard)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {visibleItems.map(renderCard)}
+            </div>
+
+            {visibleItems.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center text-sm text-muted-foreground">
+                No {activeSection === "IMAGES" ? "images" : "videos"} available.
               </div>
-            </section>
+            )}
           </div>
         )}
       </div>
