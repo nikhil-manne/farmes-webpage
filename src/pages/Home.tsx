@@ -4,7 +4,7 @@ import {
   ArrowRight, CheckCircle2, MapPin, Plus, Search, 
   ShieldCheck, Truck, Zap, Clock, Warehouse, 
   Coins, Users, Leaf, Calendar, Award, Smile,
-  ChevronLeft, ChevronRight, ShoppingBag, Film
+  ChevronLeft, ChevronRight, ShoppingBag
 } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import { api, BackendProduct } from "@/lib/api";
@@ -19,7 +19,7 @@ import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { useProcessModal } from "@/store/processModal";
 import { useInterestStore } from "@/store/interestStore";
-import { localGalleryImages, localGalleryItems } from "@/lib/localGallery";
+import { localGalleryImages } from "@/lib/localGallery";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -386,53 +386,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Our Gallery Section */}
-      <section id="gallery" className="px-5 lg:px-0">
-        <ScrollReveal animation="blur">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
-            <SectionHeading 
-              badge="Behind The Scenes"
-              title="Our Farm Gallery"
-              description="Automatic image swipe on home. Click any image to open the full gallery with separated images and videos."
-            />
-            {localGalleryItems.length > 0 && (
-              <Link 
-                to="/gallery" 
-                className="mt-4 md:mt-0 inline-flex items-center gap-2 font-bold text-primary hover:text-primary/85 hover:underline transition-all"
-              >
-                View Full Gallery ({localGalleryItems.length})
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            )}
-          </div>
-        </ScrollReveal>
-
-        {localGalleryImages.length === 0 ? (
-          <div className="rounded-[2.5rem] border border-dashed border-border p-12 text-center text-muted-foreground bg-card shadow-soft">
-            <Film className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="font-bold text-sm">Images coming soon</p>
-            <p className="text-xs mt-1">Paste image files in <code>src/gallery</code> to start the homepage slider.</p>
-          </div>
-        ) : (
-          <Link to="/gallery" className="block">
-            <div className="rounded-[2.5rem] border border-border bg-card overflow-hidden shadow-soft">
-              <div className="aspect-[16/8] md:aspect-[16/6] relative bg-black">
-                <img
-                  src={localGalleryImages[activeGalleryImageIndex]?.url}
-                  alt={localGalleryImages[activeGalleryImageIndex]?.title || "Gallery image"}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
-                <div className="absolute left-5 bottom-4 text-white">
-                  <p className="text-sm font-bold">{localGalleryImages[activeGalleryImageIndex]?.title}</p>
-                  <p className="text-xs opacity-90">Auto-swiping images. Click to open full gallery.</p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        )}
-      </section>
-
       {/* Stakeholder Benefits — staggered cards */}
       <section className="px-5 lg:px-0 space-y-12">
         <ScrollReveal animation="fade-up">
@@ -671,3 +624,5 @@ const Home = () => {
 };
 
 export default Home;
+
+
