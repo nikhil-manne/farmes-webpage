@@ -116,13 +116,9 @@ const Gallery = () => {
           Back to Home
         </Link>
 
-        <div className="text-center md:text-left mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold text-primary mb-4">
-            <Film className="h-3.5 w-3.5" />
-            Our Journey In Motion
-          </div>
-          <h1 className="font-display text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-            Our <span className="text-primary">Gallery</span>
+        <div className="text-center mb-12">
+          <h1 className="font-display text-4xl md:text-5xl font-extrabold leading-tight tracking-[0.08em] uppercase">
+            Our Gallery
           </h1>
         </div>
 
@@ -149,23 +145,25 @@ const Gallery = () => {
 
         {!loading && !error && items.length > 0 && (
           <div className="space-y-8">
-            <div className="inline-flex items-center rounded-xl border border-border bg-card p-1">
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-3 rounded-lg bg-transparent">
               <button
                 onClick={() => setActiveSection("IMAGES")}
-                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
-                  activeSection === "IMAGES" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`rounded-md px-5 py-2 text-sm font-bold uppercase tracking-wide transition-colors ${
+                  activeSection === "IMAGES" ? "bg-black text-white" : "bg-card text-foreground border border-border hover:bg-muted"
                 }`}
               >
-                Images ({localGalleryImages.length})
+                Images
               </button>
               <button
                 onClick={() => setActiveSection("VIDEOS")}
-                className={`rounded-lg px-4 py-2 text-sm font-bold transition-colors ${
-                  activeSection === "VIDEOS" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`rounded-md px-5 py-2 text-sm font-bold uppercase tracking-wide transition-colors ${
+                  activeSection === "VIDEOS" ? "bg-black text-white" : "bg-card text-foreground border border-border hover:bg-muted"
                 }`}
               >
-                Videos ({localGalleryVideos.length})
+                Videos
               </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
