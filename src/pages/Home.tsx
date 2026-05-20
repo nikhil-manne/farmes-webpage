@@ -242,15 +242,24 @@ const Home = () => {
             Farmes is a technology-driven network connecting you directly to local farmers. No middlemen, no cold storage, just honest food harvested at dawn and delivered by dusk.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link to="/market" className="h-14 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-base font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 shadow-xl shadow-primary/25">
-              Shop Fresh Harvest
-              <ArrowRight className="h-5 w-5" />
+            <Link 
+              to="/how-it-works"
+              className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
+            >
+              How It Works
             </Link>
             <Link 
               to="/farmers"
               className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
             >
               Meet Our Farmers
+            </Link>
+            <Link 
+              to="/market" 
+              className="h-14 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 text-base font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95 shadow-xl shadow-primary/25"
+            >
+              Shop Fresh Harvest
+              <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
           {/* Highlights with stagger */}
