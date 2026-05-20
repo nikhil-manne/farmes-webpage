@@ -4,10 +4,10 @@ import {
   ArrowRight, CheckCircle2, MapPin, Plus, Search, 
   ShieldCheck, Truck, Zap, Clock, Warehouse, 
   Coins, Users, Leaf, Calendar, Award, Smile,
-  ChevronLeft, ChevronRight, ShoppingBag, Film, Play, X
+  ChevronLeft, ChevronRight, ShoppingBag, Film
 } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
-import { api, BackendProduct, BackendGalleryVideo } from "@/lib/api";
+import { api, BackendProduct } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
 import { Loader } from "@/components/ui/loader";
@@ -19,7 +19,7 @@ import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { useProcessModal } from "@/store/processModal";
 import { useInterestStore } from "@/store/interestStore";
-import { HeroGallery } from "@/components/home/HeroGallery";
+import { localGalleryImages, localGalleryItems } from "@/lib/localGallery";
 
 // Hooks
 import { useScrollReveal, useStaggerReveal } from "@/hooks/useScrollReveal";
@@ -78,8 +78,7 @@ const Home = () => {
   const [selectedSize, setSelectedSize] = useState<number>(1.0);
   const openProcessModal = useProcessModal((s) => s.open);
   
-  const [galleryVideos, setGalleryVideos] = useState<BackendGalleryVideo[]>([]);
-  const [activePreviewVideo, setActivePreviewVideo] = useState<BackendGalleryVideo | null>(null);
+  const [activeGalleryImageIndex, setActiveGalleryImageIndex] = useState(0);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true });
 
@@ -99,10 +98,6 @@ const Home = () => {
   const openInterest = useInterestStore((s) => s.open);
 
   useEffect(() => {
-    api.listGallery()
-      .then(setGalleryVideos)
-      .catch(() => {});
-
     setLoading(true);
     api
       .listProducts()
@@ -148,6 +143,14 @@ const Home = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [openInterest]);
+
+  useEffect(() => {
+    if (localGalleryImages.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveGalleryImageIndex((prev) => (prev + 1) % localGalleryImages.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, []);
 
 
   const farmers = useMemo(() => {
@@ -280,8 +283,24 @@ const Home = () => {
           </div>
         </div>
         <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-200">
-          <HeroGallery videos={galleryVideos} onPlayVideo={setActivePreviewVideo} />
-          
+          <Link to="/gallery" className="block">
+            <div className="group relative w-full aspect-[4/3] md:aspect-video lg:aspect-[16/9] bg-black rounded-[2.5rem] overflow-hidden border border-border shadow-2xl cursor-pointer">
+              {localGalleryImages.length > 0 ? (
+                <img
+                  src={localGalleryImages[activeGalleryImageIndex]?.url}
+                  alt={localGalleryImages[activeGalleryImageIndex]?.title || "Gallery image"}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                  <p className="text-muted-foreground text-sm font-semibold">Add images in src/gallery</p>
+                </div>
+              )}
+              <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                <p className="text-white text-xs font-semibold">Tap to open full gallery (images + videos)</p>
+              </div>
+            </div>
+          </Link>
           {/* Decorative elements with glow drift */}
           <div className="absolute -top-6 -right-6 w-32 h-32 bg-secondary/20 rounded-full blur-3xl glow-drift" />
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl glow-drift" style={{ animationDelay: '3s' }} />
@@ -374,65 +393,43 @@ const Home = () => {
             <SectionHeading 
               badge="Behind The Scenes"
               title="Our Farm Gallery"
-              description="Watch real videos shared by our farmers showcasing the honest journey of our fresh crops."
+              description="Automatic image swipe on home. Click any image to open the full gallery with separated images and videos."
             />
-            {galleryVideos.length > 0 && (
+            {localGalleryItems.length > 0 && (
               <Link 
                 to="/gallery" 
                 className="mt-4 md:mt-0 inline-flex items-center gap-2 font-bold text-primary hover:text-primary/85 hover:underline transition-all"
               >
-                View Full Gallery ({galleryVideos.length})
+                View Full Gallery ({localGalleryItems.length})
                 <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
         </ScrollReveal>
 
-        {galleryVideos.length === 0 ? (
+        {localGalleryImages.length === 0 ? (
           <div className="rounded-[2.5rem] border border-dashed border-border p-12 text-center text-muted-foreground bg-card shadow-soft">
             <Film className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="font-bold text-sm">Videos coming soon</p>
-            <p className="text-xs mt-1">Our farmer network is currently uploading fresh video clips.</p>
+            <p className="font-bold text-sm">Images coming soon</p>
+            <p className="text-xs mt-1">Paste image files in <code>src/gallery</code> to start the homepage slider.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {galleryVideos.slice(0, 3).map((video) => (
-              <div 
-                key={video.id}
-                onClick={() => setActivePreviewVideo(video)}
-                className="group cursor-pointer rounded-[2rem] border border-border bg-card overflow-hidden shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1"
-              >
-                <div className="aspect-video bg-black relative flex items-center justify-center overflow-hidden">
-                  <video 
-                    src={video.url}
-                    preload="metadata"
-                    muted
-                    loop
-                    className="w-full h-full object-cover opacity-85 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
-                    onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.pause();
-                      e.currentTarget.currentTime = 0;
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
-                      <Play className="w-5 h-5 fill-current translate-x-0.5" />
-                    </div>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h4 className="font-display font-bold text-base leading-tight group-hover:text-primary transition-colors line-clamp-1">
-                    {video.title}
-                  </h4>
-                  <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1.5 font-medium">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {new Date(video.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                  </p>
+          <Link to="/gallery" className="block">
+            <div className="rounded-[2.5rem] border border-border bg-card overflow-hidden shadow-soft">
+              <div className="aspect-[16/8] md:aspect-[16/6] relative bg-black">
+                <img
+                  src={localGalleryImages[activeGalleryImageIndex]?.url}
+                  alt={localGalleryImages[activeGalleryImageIndex]?.title || "Gallery image"}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
+                <div className="absolute left-5 bottom-4 text-white">
+                  <p className="text-sm font-bold">{localGalleryImages[activeGalleryImageIndex]?.title}</p>
+                  <p className="text-xs opacity-90">Auto-swiping images. Click to open full gallery.</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          </Link>
         )}
       </section>
 
@@ -669,33 +666,6 @@ const Home = () => {
         </div>
       )}
 
-      {/* Video Modal Player */}
-      {activePreviewVideo && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
-            onClick={() => setActivePreviewVideo(null)}
-          />
-          {/* Modal Content */}
-          <div className="relative w-full max-w-4xl aspect-video rounded-3xl bg-black overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-            {/* Close Button */}
-            <button 
-              onClick={() => setActivePreviewVideo(null)}
-              className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            {/* Video element */}
-            <video 
-              src={activePreviewVideo.url} 
-              controls 
-              autoPlay 
-              className="w-full h-full object-contain"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
