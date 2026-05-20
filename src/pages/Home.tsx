@@ -4,10 +4,10 @@ import {
   ArrowRight, CheckCircle2, MapPin, Plus, Search, 
   ShieldCheck, Truck, Zap, Clock, Warehouse, 
   Coins, Users, Leaf, Calendar, Award, Smile,
-  ChevronLeft, ChevronRight, ShoppingBag
+  ChevronLeft, ChevronRight, ShoppingBag, Film, Play, X
 } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
-import { api, BackendProduct } from "@/lib/api";
+import { api, BackendProduct, BackendGalleryVideo } from "@/lib/api";
 import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
 import { Loader } from "@/components/ui/loader";
@@ -77,6 +77,9 @@ const Home = () => {
   const [quickAddProduct, setQuickAddProduct] = useState<UiProduct | null>(null);
   const [selectedSize, setSelectedSize] = useState<number>(1.0);
   const openProcessModal = useProcessModal((s) => s.open);
+  
+  const [galleryVideos, setGalleryVideos] = useState<BackendGalleryVideo[]>([]);
+  const [activePreviewVideo, setActivePreviewVideo] = useState<BackendGalleryVideo | null>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: false, dragFree: true });
 
@@ -96,6 +99,10 @@ const Home = () => {
   const openInterest = useInterestStore((s) => s.open);
 
   useEffect(() => {
+    api.listGallery()
+      .then(setGalleryVideos)
+      .catch(() => {});
+
     setLoading(true);
     api
       .listProducts()
@@ -216,7 +223,7 @@ const Home = () => {
         </Link>
         <nav className="hidden items-center gap-8 text-sm font-bold text-muted-foreground md:flex">
           <a href="/about-us" className="hover:text-primary transition-colors">Our Story</a>
-          <button onClick={openProcessModal} className="hover:text-primary transition-colors">How it Works</button>
+          <Link to="/gallery" className="hover:text-primary transition-colors">Our Gallery</Link>
           <Link to="/market" className="hover:text-primary transition-colors">Market</Link>
           <Link to="/farmers" className="hover:text-primary transition-colors">Farmers</Link>
         </nav>
@@ -243,10 +250,10 @@ const Home = () => {
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link 
-              to="/how-it-works"
+              to="/gallery"
               className="h-14 inline-flex items-center justify-center rounded-2xl border-2 border-border bg-background px-8 text-base font-bold text-foreground transition-all hover:bg-muted hover:border-primary/20"
             >
-              How It Works
+              Our Gallery
             </Link>
             <Link 
               to="/farmers"
@@ -360,26 +367,73 @@ const Home = () => {
         </div>
       </section>
 
-      {/* How It Works — staggered reveal for steps */}
-      <section id="how-it-works" className="px-5 lg:px-0">
+      {/* Our Gallery Section */}
+      <section id="gallery" className="px-5 lg:px-0">
         <ScrollReveal animation="blur">
-          <SectionHeading 
-            align="center"
-            badge="Our Logistics Network"
-            title="The Journey from Farm to Fork"
-            description="We've built a scalable supply-chain infrastructure powered by AI to ensure the fastest delivery network in the agricultural sector."
-            className="mb-16"
-          />
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+            <SectionHeading 
+              badge="Behind The Scenes"
+              title="Our Farm Gallery"
+              description="Watch real videos shared by our farmers showcasing the honest journey of our fresh crops."
+            />
+            {galleryVideos.length > 0 && (
+              <Link 
+                to="/gallery" 
+                className="mt-4 md:mt-0 inline-flex items-center gap-2 font-bold text-primary hover:text-primary/85 hover:underline transition-all"
+              >
+                View Full Gallery ({galleryVideos.length})
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
         </ScrollReveal>
-        <div ref={processStepsStagger} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12 relative">
-          {/* Connecting line for desktop */}
-          <div className="hidden lg:block absolute top-8 left-0 w-full h-0.5 bg-border -z-10" />
-          {processSteps.map((step) => (
-            <div key={step.stepNumber} data-reveal>
-              <ProcessStep {...step} />
-            </div>
-          ))}
-        </div>
+
+        {galleryVideos.length === 0 ? (
+          <div className="rounded-[2.5rem] border border-dashed border-border p-12 text-center text-muted-foreground bg-card shadow-soft">
+            <Film className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
+            <p className="font-bold text-sm">Videos coming soon</p>
+            <p className="text-xs mt-1">Our farmer network is currently uploading fresh video clips.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {galleryVideos.slice(0, 3).map((video) => (
+              <div 
+                key={video.id}
+                onClick={() => setActivePreviewVideo(video)}
+                className="group cursor-pointer rounded-[2rem] border border-border bg-card overflow-hidden shadow-soft transition-all duration-300 hover:shadow-elevated hover:-translate-y-1"
+              >
+                <div className="aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+                  <video 
+                    src={video.url}
+                    preload="metadata"
+                    muted
+                    loop
+                    className="w-full h-full object-cover opacity-85 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
+                    onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.pause();
+                      e.currentTarget.currentTime = 0;
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/90 text-primary flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+                      <Play className="w-5 h-5 fill-current translate-x-0.5" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h4 className="font-display font-bold text-base leading-tight group-hover:text-primary transition-colors line-clamp-1">
+                    {video.title}
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground mt-2 flex items-center gap-1.5 font-medium">
+                    <Calendar className="w-3.5 h-3.5" />
+                    {new Date(video.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Stakeholder Benefits — staggered cards */}
@@ -611,6 +665,34 @@ const Home = () => {
                 Add Rs {Math.round(quickAddProduct.pricePerKg * selectedSize)}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Modal Player */}
+      {activePreviewVideo && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={() => setActivePreviewVideo(null)}
+          />
+          {/* Modal Content */}
+          <div className="relative w-full max-w-4xl aspect-video rounded-3xl bg-black overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+            {/* Close Button */}
+            <button 
+              onClick={() => setActivePreviewVideo(null)}
+              className="absolute top-4 right-4 z-50 p-2.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/10"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            {/* Video element */}
+            <video 
+              src={activePreviewVideo.url} 
+              controls 
+              autoPlay 
+              className="w-full h-full object-contain"
+            />
           </div>
         </div>
       )}

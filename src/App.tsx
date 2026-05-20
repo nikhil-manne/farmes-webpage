@@ -14,7 +14,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import LaunchBanner from "./components/LaunchBanner";
 import Market from "./pages/Market";
-import HowItWorks from "./pages/HowItWorks";
+import Gallery from "./pages/Gallery";
 import AboutUs from "./pages/AboutUs";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -35,7 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/market" element={<Market />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/gallery" element={<Gallery />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/farmer/:id" element={<FarmerProfile />} />

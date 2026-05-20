@@ -223,8 +223,8 @@ const AboutUs = () => {
                 <Link to="/signup" className="h-12 inline-flex items-center justify-center rounded-xl bg-primary px-8 text-sm font-bold text-primary-foreground shadow-lg hover:scale-105 transition-all">
                   Get Started
                 </Link>
-                <Link to="/how-it-works" className="h-12 inline-flex items-center justify-center rounded-xl border border-primary/20 bg-transparent px-8 text-sm font-bold text-primary hover:bg-primary/5 transition-all">
-                  How it Works
+                <Link to="/gallery" className="h-12 inline-flex items-center justify-center rounded-xl border border-primary/20 bg-transparent px-8 text-sm font-bold text-primary hover:bg-primary/5 transition-all">
+                  Our Gallery
                 </Link>
              </div>
           </div>

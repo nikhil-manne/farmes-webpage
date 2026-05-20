@@ -261,9 +261,18 @@ export const api = {
     request<BackendUser>("/users/me", { method: "PATCH", body: JSON.stringify(payload) }, true),
   recordInterest: (interested: boolean) =>
     request("/interest", { method: "POST", body: JSON.stringify({ interested }) }),
+  listGallery: () => request<BackendGalleryVideo[]>("/gallery"),
   resetSession: () => {
     authToken = null;
     sessionLoaded = true;
     localStorage.removeItem(AUTH_TOKEN_KEY);
   },
+};
+
+export type BackendGalleryVideo = {
+  id: string;
+  title: string;
+  url: string;
+  key?: string | null;
+  createdAt: string;
 };
