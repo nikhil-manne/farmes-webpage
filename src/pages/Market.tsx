@@ -94,10 +94,6 @@ const Market = () => {
               <p className="text-xs text-muted-foreground font-medium">Orders placed now will be delivered on the next consecutive delivery day.</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg shadow-sm border border-border">
-             <Zap className="w-4 h-4 text-secondary" />
-             <span className="text-xs font-bold uppercase tracking-tight">Auto-order at cutoff</span>
-          </div>
         </div>
       </header>
 
