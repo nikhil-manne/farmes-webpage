@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
+import { CircleF, GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { api } from "@/lib/api";
 import { Phone, ArrowLeft, MapPin } from "lucide-react";
 
@@ -9,6 +9,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const [phone, setPhone] = useState("+91");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [addressLabel, setAddressLabel] = useState("");
   const [signupPin, setSignupPin] = useState<{ lat: number; lng: number } | null>(null);
   const [signupCenter, setSignupCenter] = useState({ lat: 17.385, lng: 78.4867 });
   const [locating, setLocating] = useState(false);
@@ -71,7 +72,7 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
         if (password.length < 6) throw new Error("Password must be at least 6 characters.");
         await api.register(trimmedPhone, name.trim(), password, address.trim());
         await api.createUserAddress({
-          label: "Home",
+          label: addressLabel.trim() || "Home",
           address: address.trim(),
           latitude: signupPin.lat,
           longitude: signupPin.lng,
@@ -195,6 +196,11 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
                   </div>
 
                   <div className="space-y-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Address Label</label>
+                    <input value={addressLabel} onChange={(e) => setAddressLabel(e.target.value)} placeholder="Home, Office, etc. (optional)" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
+                  </div>
+
+                  <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Delivery Address</label>
                     <input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no, Street, Area" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
                   </div>
@@ -218,7 +224,30 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
                           }}
                           options={{ streetViewControl: false, mapTypeControl: false }}
                         >
-                          {signupPin ? <MarkerF position={signupPin} /> : null}
+                          <CircleF
+                            center={signupPin ?? signupCenter}
+                            radius={120}
+                            options={{
+                              fillColor: "#4285F4",
+                              fillOpacity: 0.15,
+                              strokeColor: "#4285F4",
+                              strokeOpacity: 0.3,
+                              strokeWeight: 1,
+                            }}
+                          />
+                          {signupPin ? (
+                            <MarkerF
+                              position={signupPin}
+                              icon={{
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 8,
+                                fillColor: "#4285F4",
+                                fillOpacity: 1,
+                                strokeColor: "#ffffff",
+                                strokeWeight: 3,
+                              }}
+                            />
+                          ) : null}
                         </GoogleMap>
                       ) : (
                         <p className="text-xs text-muted-foreground">Loading map...</p>
