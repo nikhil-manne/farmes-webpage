@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
+import { CircleF, GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { ChevronRight, FileText, HelpCircle, LogOut, MapPin, Pencil, Phone, Shield, User as UserIcon } from "lucide-react";
 import { api, BackendUserAddress } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
@@ -274,6 +274,17 @@ const Profile = () => {
                   }}
                   options={{ streetViewControl: false, mapTypeControl: false }}
                 >
+                  <CircleF
+                    center={pin ?? mapCenter}
+                    radius={100}
+                    options={{
+                      fillColor: "#2563eb",
+                      fillOpacity: 0.22,
+                      strokeColor: "#2563eb",
+                      strokeOpacity: 0.75,
+                      strokeWeight: 2,
+                    }}
+                  />
                   {pin ? <MarkerF position={pin} /> : null}
                 </GoogleMap>
               ) : (
