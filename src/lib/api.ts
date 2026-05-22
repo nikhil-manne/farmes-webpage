@@ -270,6 +270,8 @@ export const api = {
     request<BackendUserAddress>("/users/addresses", { method: "POST", body: JSON.stringify(payload) }, true),
   setDefaultUserAddress: (addressId: string) =>
     request<{ success: boolean; addressId: string }>(`/users/addresses/${addressId}/default`, { method: "PATCH" }, true),
+  deleteUserAddress: (addressId: string) =>
+    request<{ deleted: boolean; addressId: string }>(`/users/addresses/${addressId}`, { method: "DELETE" }, true),
   createPayment: (orderId: string) =>
     request<{ id: string; amount: string; razorpayOrderId: string }>("/payments/create", {
       method: "POST",

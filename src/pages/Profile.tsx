@@ -150,6 +150,17 @@ const Profile = () => {
     }
   };
 
+  const deleteAddress = async (addressId: string) => {
+    const confirmed = window.confirm("Delete this delivery address?");
+    if (!confirmed) return;
+    try {
+      await api.deleteUserAddress(addressId);
+      setAddresses(await api.listUserAddresses());
+      setSuccess("Address deleted successfully.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete address.");
+    }
+  };
   const defaultAddress = addresses.find((entry) => entry.isDefault) ?? addresses[0] ?? null;
 
   return (
@@ -213,13 +224,18 @@ const Profile = () => {
             <div key={entry.id} className="rounded-md border border-border bg-background p-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold">{entry.label || "Saved Address"}</p>
-                {entry.isDefault ? (
-                  <span className="text-[10px] font-bold text-primary">DEFAULT</span>
-                ) : (
-                  <button onClick={() => void setDefaultAddress(entry.id)} className="text-[10px] font-semibold text-primary">
-                    Set default
+                <div className="flex items-center gap-3">
+                  {entry.isDefault ? (
+                    <span className="text-[10px] font-bold text-primary">DEFAULT</span>
+                  ) : (
+                    <button onClick={() => void setDefaultAddress(entry.id)} className="text-[10px] font-semibold text-primary">
+                      Set default
+                    </button>
+                  )}
+                  <button onClick={() => void deleteAddress(entry.id)} className="text-[10px] font-semibold text-destructive">
+                    Delete
                   </button>
-                )}
+                </div>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">{entry.address}</p>
               <p className="text-[10px] text-muted-foreground">{entry.latitude}, {entry.longitude}</p>
