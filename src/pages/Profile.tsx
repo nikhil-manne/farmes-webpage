@@ -9,14 +9,13 @@ type ProfileState = {
   name: string;
   username: string;
   mobile: string;
-  address: string;
 };
 
-const emptyProfile: ProfileState = { name: "", username: "", mobile: "", address: "" };
+const emptyProfile: ProfileState = { name: "", username: "", mobile: "" };
 
 const Profile = () => {
   const [user, setUser] = useState<ProfileState>(emptyProfile);
-  const [draft, setDraft] = useState({ name: "", address: "" });
+  const [draft, setDraft] = useState({ name: "" });
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -48,10 +47,9 @@ const Profile = () => {
           name: me.name || "",
           username: me.name ? `@${me.name.replace(/\s+/g, ".").toLowerCase()}` : "",
           mobile: me.phone,
-          address: me.address || "",
         };
         setUser(next);
-        setDraft({ name: next.name, address: next.address });
+        setDraft({ name: next.name });
         setAddresses(savedAddresses);
       })
       .catch((err: Error) => setError(err.message || "Failed to load profile."))
@@ -64,29 +62,23 @@ const Profile = () => {
 
   const onSave = () => {
     const name = draft.name.trim();
-    const address = draft.address.trim();
     if (name.length < 2) {
       setError("Name must be at least 2 characters.");
-      return;
-    }
-    if (address.length > 0 && address.length < 5) {
-      setError("Address must be at least 5 characters.");
       return;
     }
     setSaving(true);
     setError(null);
     setSuccess(null);
     api
-      .updateMe({ name, address: address || undefined })
+      .updateMe({ name })
       .then((me) => {
         const next = {
           name: me.name || "",
           username: me.name ? `@${me.name.replace(/\s+/g, ".").toLowerCase()}` : "",
           mobile: me.phone,
-          address: me.address || "",
         };
         setUser(next);
-        setDraft({ name: next.name, address: next.address });
+        setDraft({ name: next.name });
         setEditing(false);
         setSuccess("Profile updated successfully.");
       })
@@ -158,6 +150,8 @@ const Profile = () => {
     }
   };
 
+  const defaultAddress = addresses.find((entry) => entry.isDefault) ?? addresses[0] ?? null;
+
   return (
     <div>
       <header className="px-5 pt-8 lg:px-0">
@@ -181,7 +175,7 @@ const Profile = () => {
           <button
             onClick={() => {
               setEditing((value) => !value);
-              setDraft({ name: user.name, address: user.address });
+              setDraft({ name: user.name });
               setError(null);
               setSuccess(null);
             }}
@@ -197,20 +191,19 @@ const Profile = () => {
           {editing ? (
             <div className="space-y-3">
               <Field label="Name" value={draft.name} onChange={(value) => setDraft((current) => ({ ...current, name: value }))} />
-              <Field label="Delivery address" value={draft.address} onChange={(value) => setDraft((current) => ({ ...current, address: value }))} multiline />
               <button disabled={saving} onClick={onSave} className="w-full rounded-lg bg-primary py-3 text-sm font-bold text-primary-foreground disabled:opacity-60">
                 {saving ? "Saving..." : "Save profile"}
               </button>
             </div>
           ) : (
-            <InfoRow icon={MapPin} label="Delivery address" value={user.address || "Not set"} multiline />
+            <InfoRow icon={MapPin} label="Delivery address" value={defaultAddress?.address || "Not set"} multiline />
           )}
         </div>
       </section>
 
       <section className="mx-5 mt-5 rounded-lg border border-border bg-card p-5 shadow-soft lg:mx-0">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="font-display text-base font-bold">Saved Locations</h3>
+          <h3 className="font-display text-base font-bold">Delivery Address</h3>
           <button onClick={() => setShowAddAddress((v) => !v)} className="text-xs font-semibold text-primary">
             {showAddAddress ? "Close" : "+ Add location"}
           </button>
