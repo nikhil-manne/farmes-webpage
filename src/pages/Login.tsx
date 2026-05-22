@@ -1,13 +1,17 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { api } from "@/lib/api";
-import { Phone, ArrowLeft, MessageSquare } from "lucide-react";
+import { Phone, ArrowLeft, MapPin } from "lucide-react";
 
 const Login = ({ signup = false }: { signup?: boolean }) => {
   const [view, setView] = useState<"auth" | "forgot">("auth");
   const [phone, setPhone] = useState("+91");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [signupPin, setSignupPin] = useState<{ lat: number; lng: number } | null>(null);
+  const [signupCenter, setSignupCenter] = useState({ lat: 17.385, lng: 78.4867 });
+  const [locating, setLocating] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +26,30 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = useMemo(() => params.get("next") || "/", [params]);
+  const { isLoaded: mapLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+  });
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported in this browser.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+        setSignupPin(coords);
+        setSignupCenter(coords);
+        setLocating(false);
+      },
+      (err) => {
+        setError(err.message || "Unable to fetch current location.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,8 +67,16 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
       if (signup) {
         if (name.trim().length < 2) throw new Error("Name must be at least 2 characters.");
         if (address.trim().length < 5) throw new Error("Please enter a valid delivery address.");
+        if (!signupPin) throw new Error("Please set your map location or use current location.");
         if (password.length < 6) throw new Error("Password must be at least 6 characters.");
         await api.register(trimmedPhone, name.trim(), password, address.trim());
+        await api.createUserAddress({
+          label: "Home",
+          address: address.trim(),
+          latitude: signupPin.lat,
+          longitude: signupPin.lng,
+          isDefault: true,
+        });
       } else {
         await api.login(trimmedPhone, password);
       }
@@ -161,6 +197,41 @@ const Login = ({ signup = false }: { signup?: boolean }) => {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Delivery Address</label>
                     <input required value={address} onChange={(e) => setAddress(e.target.value)} placeholder="House no, Street, Area" className="flex h-12 w-full rounded-xl border border-border bg-background/50 px-4 text-sm transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none" />
+                  </div>
+
+                  <div className="space-y-2 rounded-xl border border-border bg-background/40 p-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">Pin Location</label>
+                      <button type="button" onClick={useCurrentLocation} disabled={locating} className="text-xs font-bold text-primary">
+                        {locating ? "Locating..." : "Use current location"}
+                      </button>
+                    </div>
+                    {import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (
+                      mapLoaded ? (
+                        <GoogleMap
+                          mapContainerStyle={{ width: "100%", height: "200px", borderRadius: "10px" }}
+                          center={signupPin ?? signupCenter}
+                          zoom={15}
+                          onClick={(e) => {
+                            if (!e.latLng) return;
+                            setSignupPin({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                          }}
+                          options={{ streetViewControl: false, mapTypeControl: false }}
+                        >
+                          {signupPin ? <MarkerF position={signupPin} /> : null}
+                        </GoogleMap>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">Loading map...</p>
+                      )
+                    ) : (
+                      <p className="text-xs text-muted-foreground">Set `VITE_GOOGLE_MAPS_API_KEY` to enable pin-drop map.</p>
+                    )}
+                    {signupPin ? (
+                      <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {signupPin.lat.toFixed(7)}, {signupPin.lng.toFixed(7)}
+                      </p>
+                    ) : null}
                   </div>
                 </>
               )}

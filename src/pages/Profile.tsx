@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { ChevronRight, FileText, HelpCircle, LogOut, MapPin, Pencil, Phone, Shield, User as UserIcon } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, BackendUserAddress } from "@/lib/api";
 import { Loader } from "@/components/ui/loader";
 
 type ProfileState = {
@@ -19,9 +20,20 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [addresses, setAddresses] = useState<BackendUserAddress[]>([]);
+  const [showAddAddress, setShowAddAddress] = useState(false);
+  const [addressLabel, setAddressLabel] = useState("");
+  const [addressText, setAddressText] = useState("");
+  const [pin, setPin] = useState<{ lat: number; lng: number } | null>(null);
+  const [mapCenter, setMapCenter] = useState({ lat: 17.385, lng: 78.4867 });
+  const [locating, setLocating] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { isLoaded: mapLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+  });
 
   const loadProfile = () => {
     if (!api.hasSession()) {
@@ -30,9 +42,8 @@ const Profile = () => {
     }
     setLoading(true);
     setError(null);
-    api
-      .getMe()
-      .then((me) => {
+    Promise.all([api.getMe(), api.listUserAddresses()])
+      .then(([me, savedAddresses]) => {
         const next = {
           name: me.name || "",
           username: me.name ? `@${me.name.replace(/\s+/g, ".").toLowerCase()}` : "",
@@ -41,6 +52,7 @@ const Profile = () => {
         };
         setUser(next);
         setDraft({ name: next.name, address: next.address });
+        setAddresses(savedAddresses);
       })
       .catch((err: Error) => setError(err.message || "Failed to load profile."))
       .finally(() => setLoading(false));
@@ -80,6 +92,70 @@ const Profile = () => {
       })
       .catch((err: Error) => setError(err.message || "Could not update profile."))
       .finally(() => setSaving(false));
+  };
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported in this browser.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+        setPin(coords);
+        setMapCenter(coords);
+        setLocating(false);
+      },
+      (err) => {
+        setError(err.message || "Unable to fetch current location.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
+
+  const saveNewAddress = async () => {
+    if (!addressText.trim()) {
+      setError("Please enter a complete delivery address.");
+      return;
+    }
+    if (!pin) {
+      setError("Please drop a pin on the map.");
+      return;
+    }
+    setSavingAddress(true);
+    setError(null);
+    try {
+      await api.createUserAddress({
+        label: addressLabel.trim() || undefined,
+        address: addressText.trim(),
+        latitude: pin.lat,
+        longitude: pin.lng,
+        isDefault: addresses.length === 0,
+      });
+      const refreshed = await api.listUserAddresses();
+      setAddresses(refreshed);
+      setAddressLabel("");
+      setAddressText("");
+      setPin(null);
+      setShowAddAddress(false);
+      setSuccess("Address saved successfully.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save address.");
+    } finally {
+      setSavingAddress(false);
+    }
+  };
+
+  const setDefaultAddress = async (addressId: string) => {
+    try {
+      await api.setDefaultUserAddress(addressId);
+      setAddresses(await api.listUserAddresses());
+      setSuccess("Default address updated.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not set default address.");
+    }
   };
 
   return (
@@ -130,6 +206,79 @@ const Profile = () => {
             <InfoRow icon={MapPin} label="Delivery address" value={user.address || "Not set"} multiline />
           )}
         </div>
+      </section>
+
+      <section className="mx-5 mt-5 rounded-lg border border-border bg-card p-5 shadow-soft lg:mx-0">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="font-display text-base font-bold">Saved Locations</h3>
+          <button onClick={() => setShowAddAddress((v) => !v)} className="text-xs font-semibold text-primary">
+            {showAddAddress ? "Close" : "+ Add location"}
+          </button>
+        </div>
+        <div className="space-y-2">
+          {addresses.map((entry) => (
+            <div key={entry.id} className="rounded-md border border-border bg-background p-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold">{entry.label || "Saved Address"}</p>
+                {entry.isDefault ? (
+                  <span className="text-[10px] font-bold text-primary">DEFAULT</span>
+                ) : (
+                  <button onClick={() => void setDefaultAddress(entry.id)} className="text-[10px] font-semibold text-primary">
+                    Set default
+                  </button>
+                )}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{entry.address}</p>
+              <p className="text-[10px] text-muted-foreground">{entry.latitude}, {entry.longitude}</p>
+            </div>
+          ))}
+          {!addresses.length ? <p className="text-xs text-muted-foreground">No saved locations yet.</p> : null}
+        </div>
+
+        {showAddAddress ? (
+          <div className="mt-3 space-y-2 rounded-md border border-border p-3">
+            <input
+              value={addressLabel}
+              onChange={(e) => setAddressLabel(e.target.value)}
+              placeholder="Label (Home, Office)"
+              className="h-10 w-full rounded-md border border-border bg-background px-3 text-sm"
+            />
+            <textarea
+              value={addressText}
+              onChange={(e) => setAddressText(e.target.value)}
+              placeholder="Full delivery address"
+              rows={3}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            />
+            <button onClick={useCurrentLocation} disabled={locating} className="rounded-md border border-border px-3 py-2 text-xs font-semibold">
+              {locating ? "Locating..." : "Use current location"}
+            </button>
+            {import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (
+              mapLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "200px", borderRadius: "8px" }}
+                  center={pin ?? mapCenter}
+                  zoom={15}
+                  onClick={(e) => {
+                    if (!e.latLng) return;
+                    setPin({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                  }}
+                  options={{ streetViewControl: false, mapTypeControl: false }}
+                >
+                  {pin ? <MarkerF position={pin} /> : null}
+                </GoogleMap>
+              ) : (
+                <p className="text-xs text-muted-foreground">Loading map...</p>
+              )
+            ) : (
+              <p className="text-xs text-muted-foreground">Set `VITE_GOOGLE_MAPS_API_KEY` to enable map pin.</p>
+            )}
+            {pin ? <p className="text-[11px] text-muted-foreground">{pin.lat.toFixed(7)}, {pin.lng.toFixed(7)}</p> : null}
+            <button onClick={() => void saveNewAddress()} disabled={savingAddress} className="w-full rounded-md bg-primary py-2 text-xs font-bold text-primary-foreground disabled:opacity-60">
+              {savingAddress ? "Saving..." : "Save location"}
+            </button>
+          </div>
+        ) : null}
       </section>
 
       <Section title="Support">
