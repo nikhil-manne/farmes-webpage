@@ -17,6 +17,18 @@ export type BackendUser = {
   roles: string[];
 };
 
+export type BackendUserAddress = {
+  id: string;
+  userId: string;
+  label: string | null;
+  address: string;
+  latitude: string;
+  longitude: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BackendProduct = {
   id: string;
   name: string;
@@ -121,6 +133,7 @@ export type CreateOrderPayload = {
   cartId?: string;
   items?: { productId: string; quantity: number }[];
   deliveryDate?: string;
+  addressId?: string;
   deliveryAddress?: string;
   deliveryLatitude?: number;
   deliveryLongitude?: number;
@@ -252,6 +265,11 @@ export const api = {
   listOrders: () => request<BackendOrder[]>("/orders", undefined, true),
   createOrder: (payload: CreateOrderPayload = {}) =>
     request<BackendOrder>("/orders", { method: "POST", body: JSON.stringify(payload) }, true),
+  listUserAddresses: () => request<BackendUserAddress[]>("/users/addresses", undefined, true),
+  createUserAddress: (payload: { label?: string; address: string; latitude: number; longitude: number; isDefault?: boolean }) =>
+    request<BackendUserAddress>("/users/addresses", { method: "POST", body: JSON.stringify(payload) }, true),
+  setDefaultUserAddress: (addressId: string) =>
+    request<{ success: boolean; addressId: string }>(`/users/addresses/${addressId}/default`, { method: "PATCH" }, true),
   createPayment: (orderId: string) =>
     request<{ id: string; amount: string; razorpayOrderId: string }>("/payments/create", {
       method: "POST",
