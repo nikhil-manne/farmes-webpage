@@ -276,16 +276,28 @@ const Profile = () => {
                 >
                   <CircleF
                     center={pin ?? mapCenter}
-                    radius={100}
+                    radius={120}
                     options={{
-                      fillColor: "#2563eb",
-                      fillOpacity: 0.22,
-                      strokeColor: "#2563eb",
-                      strokeOpacity: 0.75,
-                      strokeWeight: 2,
+                      fillColor: "#4285F4",
+                      fillOpacity: 0.15,
+                      strokeColor: "#4285F4",
+                      strokeOpacity: 0.3,
+                      strokeWeight: 1,
                     }}
                   />
-                  {pin ? <MarkerF position={pin} /> : null}
+                  {pin ? (
+                    <MarkerF
+                      position={pin}
+                      icon={{
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: "#4285F4",
+                        fillOpacity: 1,
+                        strokeColor: "#ffffff",
+                        strokeWeight: 3,
+                      }}
+                    />
+                  ) : null}
                 </GoogleMap>
               ) : (
                 <p className="text-xs text-muted-foreground">Loading map...</p>
