@@ -375,12 +375,7 @@ const Cart = () => {
               </div>
             ) : null}
 
-            {selectedAddress ? (
-              <div className="rounded-md border border-primary/20 bg-primary-soft/20 p-3">
-                <p className="text-xs font-semibold text-foreground">Selected for delivery</p>
-                <p className="mt-1 text-xs text-muted-foreground">{selectedAddress.address}</p>
-              </div>
-            ) : null}
+
           </div>
 
           <div className="mx-5 mt-5 space-y-2.5 rounded-lg border border-border bg-card p-4 shadow-soft lg:mx-0">
