@@ -18,6 +18,10 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [deliveryLatitude, setDeliveryLatitude] = useState("");
+  const [deliveryLongitude, setDeliveryLongitude] = useState("");
+  const [locating, setLocating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,13 +69,24 @@ const Cart = () => {
     }
     const orderItems = items.filter((item) => item.qty > 0).map((item) => ({ productId: item.id, quantity: item.qty }));
     if (!orderItems.length) return;
+    const lat = Number(deliveryLatitude);
+    const lng = Number(deliveryLongitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      setCheckoutError("Please enter valid delivery latitude and longitude.");
+      return;
+    }
     
     setCheckoutError(null);
     setPlacingOrder(true);
     
     try {
       // 1. Create the order
-      const order = await api.createOrder({ items: orderItems });
+      const order = await api.createOrder({
+        items: orderItems,
+        deliveryAddress: deliveryAddress.trim() || undefined,
+        deliveryLatitude: lat,
+        deliveryLongitude: lng,
+      });
       
       // 2. Create the payment record and get Razorpay Order ID
       const paymentInfo = await api.createPayment(order.id);
@@ -137,6 +152,26 @@ const Cart = () => {
   };
 
   const formatSize = (kg: number) => (kg < 1 ? `${kg * 1000}g` : `${kg}kg`);
+  const autofillCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setCheckoutError("Geolocation is not supported in this browser.");
+      return;
+    }
+    setCheckoutError(null);
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setDeliveryLatitude(position.coords.latitude.toFixed(7));
+        setDeliveryLongitude(position.coords.longitude.toFixed(7));
+        setLocating(false);
+      },
+      (error) => {
+        setCheckoutError(error.message || "Unable to fetch current location.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  };
 
   return (
     <div>
@@ -203,6 +238,38 @@ const Cart = () => {
 
       {detailed.length > 0 ? (
         <>
+          <div className="mx-5 mt-5 space-y-2.5 rounded-lg border border-border bg-card p-4 shadow-soft lg:mx-0">
+            <p className="font-display text-sm font-bold text-foreground">Delivery Address</p>
+            <input
+              value={deliveryAddress}
+              onChange={(event) => setDeliveryAddress(event.target.value)}
+              placeholder="Enter delivery address"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            />
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <input
+                value={deliveryLatitude}
+                onChange={(event) => setDeliveryLatitude(event.target.value)}
+                placeholder="Latitude (e.g. 18.5204303)"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+              />
+              <input
+                value={deliveryLongitude}
+                onChange={(event) => setDeliveryLongitude(event.target.value)}
+                placeholder="Longitude (e.g. 73.8567437)"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={autofillCurrentLocation}
+              disabled={locating}
+              className="rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground"
+            >
+              {locating ? "Fetching location..." : "Use current location"}
+            </button>
+          </div>
+
           <div className="mx-5 mt-5 space-y-2.5 rounded-lg border border-border bg-card p-4 shadow-soft lg:mx-0">
             <Row label="Subtotal" value={`Rs ${subtotal.toFixed(2)}`} />
             {delivery > 0 ? <Row label="Delivery" value={`Rs ${delivery.toFixed(2)}`} /> : null}

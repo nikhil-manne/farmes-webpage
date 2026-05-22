@@ -95,6 +95,9 @@ export type BackendOrder = {
   createdAt: string;
   status: BackendOrderStatus;
   totalAmount: string;
+  deliveryAddress?: string | null;
+  deliveryLatitude?: string | null;
+  deliveryLongitude?: string | null;
   items: Array<{
     id: string;
     quantity: string;
@@ -118,6 +121,9 @@ export type CreateOrderPayload = {
   cartId?: string;
   items?: { productId: string; quantity: number }[];
   deliveryDate?: string;
+  deliveryAddress?: string;
+  deliveryLatitude?: number;
+  deliveryLongitude?: number;
 };
 
 const AUTH_TOKEN_KEY = "farmes_auth_token";
