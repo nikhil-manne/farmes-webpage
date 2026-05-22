@@ -341,4 +341,4 @@ export function toOrderUiStatus(status: BackendOrderStatus): "ordered" | "harves
   return "ordered";
 }
 
-export const categories = ["All", "Leafy", "Roots", "Fruiting", "Cruciferous", "Gourds", "Condiments"];
+export const categories = ["All", "Leafy", "Roots", "Gourds", "Condiments"];
