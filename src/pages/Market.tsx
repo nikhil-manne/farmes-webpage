@@ -6,6 +6,7 @@ import { categories, toUiProduct, UiProduct } from "@/lib/mappers";
 import { useCart } from "@/store/cart";
 import { Loader } from "@/components/ui/loader";
 import { SectionHeading } from "@/components/home/SectionHeading";
+import { toast } from "sonner";
 
 const Market = () => {
   const [active, setActive] = useState("All");
@@ -35,6 +36,7 @@ const Market = () => {
   const confirmQuickAdd = () => {
     if (quickAddProduct) {
       add(quickAddProduct.id, selectedSize);
+      toast.success("Added successfully to cart");
       setQuickAddProduct(null);
     }
   };
