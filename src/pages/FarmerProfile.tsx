@@ -67,7 +67,7 @@ const FarmerProfile = () => {
           if (item.url?.trim()) nextSigned[item.mediaId] = item.url.trim();
         });
       } catch {
-        if (active) setMediaAccessError("Could not load /media/farmer/:id for this profile. Login may be required.");
+        if (active) setMediaAccessError("Please login to view the farm photos and videos");
       }
       if (active) setSignedUrlByMediaId(nextSigned);
     })();
