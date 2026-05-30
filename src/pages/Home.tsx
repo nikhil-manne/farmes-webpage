@@ -18,7 +18,6 @@ import { ProcessStep } from "@/components/home/ProcessStep";
 import { BenefitCard } from "@/components/home/BenefitCard";
 import { ScrollReveal } from "@/components/home/ScrollReveal";
 import { useProcessModal } from "@/store/processModal";
-import { useInterestStore } from "@/store/interestStore";
 import { localGalleryImages } from "@/lib/localGallery";
 
 // Hooks
@@ -95,8 +94,6 @@ const Home = () => {
   const footerReveal = useScrollReveal<HTMLDivElement>({ threshold: 0.15 });
   const highlightsStagger = useStaggerReveal<HTMLDivElement>({ staggerDelay: 150 });
 
-  const openInterest = useInterestStore((s) => s.open);
-
   useEffect(() => {
     setLoading(true);
     api
@@ -123,26 +120,7 @@ const Home = () => {
         .catch(() => undefined);
     }
 
-    // Scroll listener for bottom-of-page interest popup
-    let hasTriggered = false;
-    const handleScroll = () => {
-      if (hasTriggered) return;
-      
-      const scrollPosition = window.innerHeight + window.pageYOffset;
-      const threshold = document.documentElement.scrollHeight - 100; // 100px from bottom
-      
-      if (scrollPosition >= threshold) {
-        const responded = localStorage.getItem('farmer_interest_responded') === 'true';
-        if (!responded) {
-          openInterest();
-          hasTriggered = true;
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [openInterest]);
+  }, []);
 
   useEffect(() => {
     if (localGalleryImages.length <= 1) return;
@@ -624,5 +602,3 @@ const Home = () => {
 };
 
 export default Home;
-
-
