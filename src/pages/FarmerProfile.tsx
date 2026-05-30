@@ -8,7 +8,7 @@ import { Loader } from "@/components/ui/loader";
 import { getProductImage, normalizeProductName } from "@/lib/mappers";
 
 type MediaItem = { id: string; type: "IMAGE" | "VIDEO"; url: string };
-type FarmerProductCard = { id: string; name: string; image: string; pricePerKg: number };
+type FarmerProductCard = { id: string; name: string; image: string };
 
 const isAbsoluteUrl = (value: string) => /^https?:\/\//i.test((value || "").trim());
 const inferMediaTypeFromUrl = (url: string): "IMAGE" | "VIDEO" => {
@@ -84,7 +84,6 @@ const FarmerProfile = () => {
           id: product.id,
           name: normalized.label,
           image: getProductImage(normalized.key),
-          pricePerKg: Number(product.pricePerKg),
         };
       }),
     [farmer],
@@ -169,7 +168,6 @@ const FarmerProfile = () => {
                 </div>
                 <div className="p-3">
                   <p className="truncate font-display text-sm font-bold">{product.name}</p>
-                  <p className="mt-1 text-sm font-bold text-primary">Rs {product.pricePerKg}/kg</p>
                 </div>
               </Link>
             ))}
