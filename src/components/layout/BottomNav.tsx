@@ -12,7 +12,8 @@ const tabs = [
 
 export const BottomNav = () => {
   const items = useCart((s) => s.items);
-  const count = items.reduce((a, i) => a + i.qty, 0);
+  const count = items.length;
+  const badgeText = count > 99 ? "99+" : String(count);
 
   return (
     <nav className="fixed bottom-0 left-1/2 z-40 w-full max-w-[480px] -translate-x-1/2 border-t border-border/60 bg-background/90 backdrop-blur-xl md:max-w-[720px] lg:hidden">
@@ -32,7 +33,7 @@ export const BottomNav = () => {
                 <Icon className="h-[22px] w-[22px]" strokeWidth={2} />
                 {to === "/cart" && count > 0 && (
                   <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
-                    {count}
+                    {badgeText}
                   </span>
                 )}
               </span>
