@@ -12,7 +12,8 @@ const tabs = [
 
 export const SideNav = () => {
   const items = useCart((s) => s.items);
-  const count = items.reduce((a, i) => a + i.qty, 0);
+  const count = items.length;
+  const badgeText = count > 99 ? "99+" : String(count);
 
   return (
     <aside className="sticky top-0 flex h-screen w-[240px] shrink-0 flex-col border-r border-border/60 bg-background px-5 py-8">
@@ -43,7 +44,7 @@ export const SideNav = () => {
               <Icon className="h-[20px] w-[20px]" strokeWidth={2} />
               {to === "/cart" && count > 0 && (
                 <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
-                  {count}
+                  {badgeText}
                 </span>
               )}
             </span>
