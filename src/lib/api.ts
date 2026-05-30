@@ -145,7 +145,7 @@ let authToken: string | null = null;
 let sessionLoaded = false;
 
 function getBaseUrl() {
-  return (import.meta.env.VITE_API_URL || "backend-production-415c.up.railway.app").replace(/\/+$/, "");
+  return (import.meta.env.VITE_API_URL || "https://backend-m5on.onrender.com").replace(/\/+$/, "");
 }
 
 async function loadSessionFromStorage() {
