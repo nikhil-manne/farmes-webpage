@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Rocket, X, MousePointer2, Heart } from 'lucide-react';
+import { Rocket, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { useInterestStore } from '@/store/interestStore';
 
 const LaunchBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const openInterest = useInterestStore(s => s.open);
 
   useEffect(() => {
     // Show after a short delay for a better entry effect
@@ -20,9 +18,8 @@ const LaunchBanner = () => {
       <div
         className={cn(
           "pointer-events-auto relative overflow-hidden w-full max-w-4xl mx-auto bg-primary text-white rounded-2xl shadow-lg border border-primary-muted/20",
-          "animate-in fade-in slide-in-from-top-4 duration-700 ease-out cursor-pointer hover:scale-[1.01] transition-transform active:scale-95"
+          "animate-in fade-in slide-in-from-top-4 duration-700 ease-out"
         )}
-        onClick={openInterest}
       >
         {/* Shimmer Effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
@@ -34,31 +31,15 @@ const LaunchBanner = () => {
             </div>
             <div className="flex flex-col">
               <p className="text-sm md:text-base font-bold text-white leading-none">
-                Launching <span className="text-secondary">May 30, 2026</span>
+                We are <span className="text-secondary">officially launched</span>
               </p>
               <p className="text-[10px] md:text-xs text-primary-soft font-medium mt-1">
-                Fresh farm-to-table delivery begins Saturday morning.
+                Fresh farm-to-table delivery is now live.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
-             {/* Desktop Interest Cue */}
-             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg border border-white/10 group-hover:bg-white/20 transition-colors">
-                <MousePointer2 className="w-3.5 h-3.5 text-secondary animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Click to show interest</span>
-             </div>
-             
-             {/* Mobile/Tablet Interest Cue */}
-             <div className="flex lg:hidden items-center gap-1.5 px-2.5 py-1 bg-secondary text-primary rounded-lg shadow-sm animate-pulse">
-                <Heart className="w-3 h-3 fill-current" />
-                <span className="text-[9px] font-black uppercase tracking-tight">Interested?</span>
-             </div>
-
-             <div className="hidden md:flex lg:hidden items-center gap-2 px-3 py-1 bg-white/10 rounded-lg border border-white/10">
-                <Calendar className="w-3.5 h-3.5 text-secondary" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Save the date</span>
-             </div>
              <button
               onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
               className="p-2 text-primary-muted hover:text-white transition-all hover:bg-white/10 rounded-lg relative z-10"
