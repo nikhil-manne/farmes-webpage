@@ -19,7 +19,6 @@ import AboutUs from "./pages/AboutUs";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound.tsx";
-import { FarmerInterestPopup } from "./components/FarmerInterestPopup";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +28,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <LaunchBanner />
-      <FarmerInterestPopup />
       <BrowserRouter>
         <MobileShell>
           <Routes>
