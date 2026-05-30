@@ -9,6 +9,22 @@ import { Loader } from "@/components/ui/loader";
 
 const DEFAULT_CENTER = { lat: 17.385, lng: 78.4867 };
 
+const PRICE_EPSILON = 0.0001;
+
+const findQuantityPrice = (quantityPrices: Record<string, number> | undefined, qty: number) => {
+  if (!quantityPrices) return undefined;
+  const direct = quantityPrices[String(qty)];
+  if (direct !== undefined) return Number(direct);
+  const entry = Object.entries(quantityPrices).find(([key]) => Math.abs(Number(key) - qty) < PRICE_EPSILON);
+  return entry ? Number(entry[1]) : undefined;
+};
+
+const getPackStep = (item: UiProduct) => {
+  const sizes = (item.allowedPackSizes || []).map(Number).filter((n) => Number.isFinite(n) && n > 0);
+  if (sizes.length === 0) return 1;
+  return Math.min(...sizes);
+};
+
 const Cart = () => {
   const { items, setQty, clear } = useCart();
   const [products, setProducts] = useState<UiProduct[]>([]);
@@ -73,7 +89,10 @@ const Cart = () => {
     })
     .filter(Boolean) as (UiProduct & { qty: number })[];
 
-  const subtotal = detailed.reduce((sum, item) => sum + (item.quantityPrices?.[item.qty] ?? item.pricePerKg * item.qty), 0);
+  const subtotal = detailed.reduce(
+    (sum, item) => sum + (findQuantityPrice(item.quantityPrices, item.qty) ?? item.pricePerKg * item.qty),
+    0,
+  );
   const delivery = subtotal > 0 ? deliveryPrice : 0;
   const packaging = subtotal > 0 ? packagingFee : 0;
   const platform = subtotal > 0 ? platformFee : 0;
@@ -261,16 +280,31 @@ const Cart = () => {
               <h4 className="truncate font-display text-sm font-semibold">{item.name} {item.nameTe && <span className="ml-1 text-[10px] font-normal text-muted-foreground">({item.nameTe})</span>}</h4>
               <p className="truncate text-[11px] text-muted-foreground">by {item.farmerName}</p>
               <p className="mt-1 font-display text-sm font-bold">
-                Rs {Math.round(item.quantityPrices?.[item.qty] ?? item.pricePerKg * item.qty)}
+                Rs {Math.round(findQuantityPrice(item.quantityPrices, item.qty) ?? item.pricePerKg * item.qty)}
                 <span className="ml-1 text-[10px] font-medium text-muted-foreground">(Rs {item.pricePerKg}/kg)</span>
               </p>
             </div>
             <div className="flex items-center gap-1 rounded-md border border-border bg-background px-1 py-1">
-              <button onClick={() => setQty(item.id, Math.max(0, item.qty - (item.qty <= 1 && item.qty > 0 ? item.qty : 1)))} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" aria-label="Decrease">
-                {item.qty <= 1 ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
+              <button
+                onClick={() => {
+                  const step = getPackStep(item);
+                  const nextQty = Number((item.qty - step).toFixed(3));
+                  setQty(item.id, nextQty > PRICE_EPSILON ? nextQty : 0);
+                }}
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted"
+                aria-label="Decrease"
+              >
+                {item.qty <= getPackStep(item) ? <Trash2 className="h-3.5 w-3.5" /> : <Minus className="h-3.5 w-3.5" />}
               </button>
               <span className="min-w-[40px] px-1 text-center font-display text-[12px] font-bold">{formatSize(item.qty)}</span>
-              <button onClick={() => setQty(item.id, item.qty + 1)} className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground" aria-label="Increase">
+              <button
+                onClick={() => {
+                  const step = getPackStep(item);
+                  setQty(item.id, Number((item.qty + step).toFixed(3)));
+                }}
+                className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground"
+                aria-label="Increase"
+              >
                 <Plus className="h-3.5 w-3.5" />
               </button>
             </div>
