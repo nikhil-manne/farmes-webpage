@@ -9,6 +9,11 @@ type ApiErrorEnvelope = {
   error?: { message?: string | string[] };
 };
 
+type GenericErrorPayload = {
+  message?: string | string[];
+  error?: string | { message?: string | string[] };
+};
+
 export type BackendUser = {
   id: string;
   phone: string;
@@ -188,26 +193,46 @@ async function request<T>(path: string, init?: RequestInit, requireAuth = false)
 
   const raw = await res.text();
   let payload: ApiEnvelope<T> | ApiErrorEnvelope | null = null;
+  let genericErrorPayload: GenericErrorPayload | null = null;
   try {
     payload = JSON.parse(raw) as ApiEnvelope<T> | ApiErrorEnvelope;
+    genericErrorPayload = payload as unknown as GenericErrorPayload;
   } catch {
     payload = null;
+    genericErrorPayload = null;
   }
+
+  const extractErrorMessage = () => {
+    if (payload && "error" in payload) {
+      const messageRaw = payload.error?.message;
+      const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;
+      if (message) return message;
+    }
+    if (genericErrorPayload) {
+      const messageRaw = genericErrorPayload.message;
+      const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;
+      if (message) return message;
+      if (typeof genericErrorPayload.error === "string" && genericErrorPayload.error) return genericErrorPayload.error;
+      if (typeof genericErrorPayload.error === "object" && genericErrorPayload.error) {
+        const nested = genericErrorPayload.error.message;
+        const nestedMessage = Array.isArray(nested) ? nested.join(", ") : nested;
+        if (nestedMessage) return nestedMessage;
+      }
+    }
+    return raw ? raw.slice(0, 240) : "Request failed";
+  };
 
   // Auto-clear stale session when the backend explicitly rejects the token
   if (res.status === 401) {
     authToken = null;
     sessionLoaded = true;
     localStorage.removeItem(AUTH_TOKEN_KEY);
-    const messageRaw = payload && "error" in payload ? payload.error?.message : null;
-    const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;
+    const message = extractErrorMessage();
     throw new Error(message || "Session expired. Please log in again.");
   }
 
   if (!payload || !res.ok || !("success" in payload) || payload.success === false) {
-    const messageRaw = payload && "error" in payload ? payload.error?.message : "Request failed";
-    const message = Array.isArray(messageRaw) ? messageRaw.join(", ") : messageRaw;
-    throw new Error(message || (raw ? raw.slice(0, 120) : "Request failed"));
+    throw new Error(extractErrorMessage());
   }
 
   return payload.data;
@@ -302,3 +327,5 @@ export type BackendGalleryVideo = {
   key?: string | null;
   createdAt: string;
 };
+
+
