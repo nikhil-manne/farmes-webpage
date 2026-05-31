@@ -177,7 +177,9 @@ const Cart = () => {
       navigate("/login?next=/cart");
       return;
     }
-    const orderItems = items.filter((item) => item.qty > 0).map((item) => ({ productId: item.id, quantity: item.qty }));
+    const orderItems = detailed
+      .filter((item) => Number.isFinite(item.qty) && item.qty > 0)
+      .map((item) => ({ productId: item.id, quantity: Number(item.qty.toFixed(3)) }));
     if (!orderItems.length) return;
     if (!selectedAddressId) {
       setCheckoutError("Please select a delivery address before placing your order.");
