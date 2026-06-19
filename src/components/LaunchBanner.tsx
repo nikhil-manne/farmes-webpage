@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket, X } from 'lucide-react';
+import { AlertTriangle, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
-
 const LaunchBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     // Show after a short delay for a better entry effect
     const timer = setTimeout(() => setIsVisible(true), 1000);
     return () => clearTimeout(timer);
   }, []);
-
   if (!isVisible) return null;
-
   return (
     <div className="fixed inset-x-0 top-0 z-[100] pointer-events-none px-4 pt-4">
       <div
@@ -23,22 +19,20 @@ const LaunchBanner = () => {
       >
         {/* Shimmer Effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
-
         <div className="relative flex items-center justify-between gap-4 p-3 md:p-4">
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0 w-10 h-10 bg-secondary text-primary rounded-xl flex items-center justify-center shadow-sm">
-              <Rocket className="w-5 h-5" />
+              <AlertTriangle className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <p className="text-sm md:text-base font-bold text-white leading-none">
-                We are <span className="text-secondary">officially launched</span>
+                Due to <span className="text-secondary">technical issues</span>
               </p>
               <p className="text-[10px] md:text-xs text-primary-soft font-medium mt-1">
-                Fresh farm-to-table delivery is now live.
+                We are currently not accepting any orders.
               </p>
             </div>
           </div>
-
           <div className="flex items-center gap-2 md:gap-4">
              <button
               onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
@@ -48,11 +42,8 @@ const LaunchBanner = () => {
               <X className="w-5 h-5" />
             </button>
           </div>
-
         </div>
       </div>
-
-
       <style>{`
         @keyframes shimmer {
           100% { transform: translateX(100%); }
@@ -68,5 +59,4 @@ const LaunchBanner = () => {
     </div>
   );
 };
-
 export default LaunchBanner;
